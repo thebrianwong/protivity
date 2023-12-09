@@ -12,13 +12,9 @@ import androidx.compose.runtime.setValue
 @Composable
 fun Timer(duration: Long) {
     var remainingTime by remember { mutableLongStateOf(duration) }
-//    val hours = (remainingTime / 3600).toInt()
-//    val minutes = (remainingTime - (hours * 3600)).toInt()
-//    val seconds = ()
-    val minutes = (remainingTime / 60).toInt()
-    val seconds = remainingTime - minutes
-    val hours = (minutes / 60).toInt()
-
+    val hours = (remainingTime / 3600).toInt()
+    val minutes = (remainingTime - (hours * 3600)) / 60
+    val seconds = (remainingTime - (hours * 3600) - (minutes * 60)).toInt()
 
     val timer = object:CountDownTimer(duration, 1000){
         override fun onTick(newTime: Long) {
@@ -36,6 +32,5 @@ fun Timer(duration: Long) {
         }
     }
 
-//    Text(text = "Remaining second: ${remainingTime / 1}")
     Text(text = "Remaining time: $hours:$minutes:$seconds")
 }
