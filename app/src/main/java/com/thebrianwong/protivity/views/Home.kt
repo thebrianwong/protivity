@@ -11,6 +11,6 @@ import com.thebrianwong.protivity.composables.Timer
 fun Home() {
     Scaffold {
         Text(text = "", modifier = Modifier.padding(it))
-        Timer(duration = 360000 * 1000)
+        Timer(startingDuration = 360000 * 1000)
     }
 }
