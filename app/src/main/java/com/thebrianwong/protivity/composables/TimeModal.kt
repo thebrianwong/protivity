@@ -9,6 +9,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -19,6 +24,20 @@ import com.thebrianwong.protivity.R
 
 @Composable
 fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
+    var hours by remember { mutableStateOf<Long?>(null) }
+    var minutes by remember { mutableStateOf<Long?>(null) }
+    var seconds by remember { mutableStateOf<Long?>(null) }
+
+    fun handleUserInput(newValue: String, valueType: String, maxValue: Long) {
+        val newValueLong = newValue.toLongOrNull()
+        if ((newValueLong == null) || (newValueLong <= maxValue)) {
+            when (valueType) {
+                "hours" -> hours = newValueLong
+                "minutes" -> minutes = newValueLong
+                "seconds" -> seconds = newValueLong
+            }
+        }
+    }
 
     AlertDialog(
         onDismissRequest = { handleDismiss() },
@@ -46,27 +65,24 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Column(
+                    TimeModalInput(
+                        value = hours,
+                        label = "HH",
                         modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "HH")
-                        TextField(value = "00", onValueChange = {})
-                    }
-                    Column(
+                        handleValueChange = { handleUserInput(it, "hours", 99) }
+                    )
+                    TimeModalInput(
+                        value = minutes,
+                        label = "MM",
                         modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "MM")
-                        TextField(value = "00", onValueChange = {})
-                    }
-                    Column(
+                        handleValueChange = { handleUserInput(it, "minutes", 59) }
+                    )
+                    TimeModalInput(
+                        value = seconds,
+                        label = "SS",
                         modifier = Modifier.weight(1f),
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(text = "SS")
-                        TextField(value = "00", onValueChange = {})
-                    }
+                        handleValueChange = { handleUserInput(it, "seconds", 59) }
+                    )
                 }
             }
         }
