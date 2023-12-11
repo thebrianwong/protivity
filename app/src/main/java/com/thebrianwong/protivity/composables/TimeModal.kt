@@ -15,7 +15,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusProperties
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -69,20 +75,26 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
                         value = hours,
                         label = "HH",
                         modifier = Modifier.weight(1f),
-                        handleValueChange = { handleUserInput(it, "hours", 99) }
-                    )
+                        finalInput = false,
+                        handleValueChange = { handleUserInput(it, "hours", 99) },
+
+                        )
                     TimeModalInput(
                         value = minutes,
                         label = "MM",
                         modifier = Modifier.weight(1f),
-                        handleValueChange = { handleUserInput(it, "minutes", 59) }
-                    )
+                        finalInput = false,
+                        handleValueChange = { handleUserInput(it, "minutes", 59) },
+
+                        )
                     TimeModalInput(
                         value = seconds,
                         label = "SS",
                         modifier = Modifier.weight(1f),
-                        handleValueChange = { handleUserInput(it, "seconds", 59) }
-                    )
+                        finalInput = true,
+                        handleValueChange = { handleUserInput(it, "seconds", 59) },
+
+                        )
                 }
             }
         }
