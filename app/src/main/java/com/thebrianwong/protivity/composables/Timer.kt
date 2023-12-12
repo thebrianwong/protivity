@@ -26,7 +26,7 @@ fun Timer(startingDuration: Long) {
 
     var timer by remember {
         mutableStateOf(ProtivityCountDownTimer(
-            startingDuration, { updateRemainingTime(it) }
+            0, { }
         ))
     }
 
@@ -44,6 +44,7 @@ fun Timer(startingDuration: Long) {
     }
 
     DisposableEffect(key1 = startingDuration) {
+        timer = ProtivityCountDownTimer(startingDuration, { updateRemainingTime(it) })
         timer.start()
         isCounting = true
         onDispose {

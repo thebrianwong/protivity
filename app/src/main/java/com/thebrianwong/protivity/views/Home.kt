@@ -21,7 +21,7 @@ import com.thebrianwong.protivity.composables.Timer
 
 @Composable
 fun Home() {
-    val duration by remember { mutableStateOf<Long?>(null) }
+    var duration by remember { mutableStateOf<Long?>(null) }
     var displayModal by remember { mutableStateOf(false) }
     Scaffold(
         floatingActionButtonPosition = FabPosition.End,
@@ -38,9 +38,14 @@ fun Home() {
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Timer(startingDuration = 360000 * 1000)
+            if (duration != null) {
+                Timer(startingDuration = duration!!)
+            }
             if (displayModal) {
-                TimeModal(handleConfirm = {}, handleDismiss = { displayModal = false })
+                TimeModal(
+                    handleConfirm = { duration = it },
+                    handleDismiss = { displayModal = false }
+                )
             }
         }
     }

@@ -7,10 +7,8 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -45,11 +43,25 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
         }
     }
 
+    fun calculateInputTime(): Long {
+        val inputHours = hours ?: 0
+        val inputMinutes = minutes ?: 0
+        val inputSeconds = seconds ?: 0
+        val hoursToSeconds = inputHours * 3600
+        val minutesToSeconds = inputMinutes * 60
+        val inputTimeMilliseconds = (hoursToSeconds + minutesToSeconds + inputSeconds) * 1000
+        return inputTimeMilliseconds
+    }
+
     AlertDialog(
         onDismissRequest = { handleDismiss() },
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true),
         confirmButton = {
-            Button(onClick = { handleConfirm(0) }) {
+            Button(onClick = {
+                val userInputTime = calculateInputTime()
+                handleConfirm(userInputTime)
+                handleDismiss()
+            }) {
                 Text(text = "Create")
             }
         },
@@ -96,6 +108,7 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
 
                         )
                 }
+                Text(text = "$hours $minutes $seconds")
             }
         }
     )
