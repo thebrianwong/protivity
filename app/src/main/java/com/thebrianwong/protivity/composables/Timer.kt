@@ -1,6 +1,5 @@
 package com.thebrianwong.protivity.composables
 
-import android.os.CountDownTimer
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +36,9 @@ fun Timer(startingDuration: Long) {
             timer.cancel()
             isCounting = false
         } else {
-            timer = ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) })
+            if (startingDuration == remainingTime) {
+                timer = ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) })
+            }
             timer.start()
             isCounting = true
         }
@@ -45,8 +46,7 @@ fun Timer(startingDuration: Long) {
 
     DisposableEffect(key1 = startingDuration) {
         timer = ProtivityCountDownTimer(startingDuration, { updateRemainingTime(it) })
-        timer.start()
-        isCounting = true
+        remainingTime = startingDuration
         onDispose {
             timer.cancel()
             isCounting = false
@@ -55,6 +55,6 @@ fun Timer(startingDuration: Long) {
 
     Text(text = "Remaining time: ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}")
     Button(onClick = { handleButtonClick() }) {
-        Text(text = if (isCounting) "Pause" else "Resume")
+        Text(text = if (isCounting) "Pause" else if (startingDuration == remainingTime) "Start" else "Resume")
     }
 }
