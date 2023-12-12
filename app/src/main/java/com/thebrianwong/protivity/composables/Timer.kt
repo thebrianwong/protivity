@@ -36,17 +36,27 @@ fun Timer(startingDuration: Long) {
             timer.cancel()
             isCounting = false
         } else {
-            if (startingDuration == remainingTime) {
-                timer = ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) })
-            }
+            timer = ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) })
             timer.start()
             isCounting = true
+        }
+    }
+
+    fun increaseTimer(timeIncrement: Long) {
+        remainingTime += timeIncrement * 1000
+        timer.cancel()
+        timer = ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) })
+        if (isCounting) {
+            timer.start()
         }
     }
 
     DisposableEffect(key1 = startingDuration) {
         timer = ProtivityCountDownTimer(startingDuration, { updateRemainingTime(it) })
         remainingTime = startingDuration
+        if (isCounting) {
+            timer.start()
+        }
         onDispose {
             timer.cancel()
             isCounting = false
@@ -57,4 +67,5 @@ fun Timer(startingDuration: Long) {
     Button(onClick = { handleButtonClick() }) {
         Text(text = if (isCounting) "Pause" else if (startingDuration == remainingTime) "Start" else "Resume")
     }
+    TimeIncrementButtons(handleClick = {increaseTimer(it)})
 }
