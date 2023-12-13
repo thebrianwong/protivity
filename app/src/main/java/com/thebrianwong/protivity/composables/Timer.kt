@@ -17,6 +17,7 @@ fun Timer(startingDuration: Long) {
     val hours = (remainingTime / 3600 / 1000).toInt()
     val minutes = ((remainingTime / 1000 - (hours * 3600)) / 60).toInt()
     val seconds = (remainingTime / 1000 - (hours * 3600) - (minutes * 60)).toInt()
+    var isNewCounter by remember { mutableStateOf(true)}
     var isCounting by remember { mutableStateOf(false) }
 
     fun updateRemainingTime(newTime: Long) {
@@ -36,6 +37,7 @@ fun Timer(startingDuration: Long) {
             ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) }, { resetTimer() })
         remainingTime = startingDuration
         isCounting = false
+        isNewCounter = true
     }
 
     fun handleButtonClick() {
@@ -49,6 +51,7 @@ fun Timer(startingDuration: Long) {
                 { resetTimer() })
             timer.start()
             isCounting = true
+            isNewCounter = false
         }
     }
 
@@ -69,6 +72,7 @@ fun Timer(startingDuration: Long) {
         if (isCounting) {
             timer.start()
         }
+        isNewCounter = true
         onDispose {
             timer.cancel()
             isCounting = false
@@ -77,7 +81,7 @@ fun Timer(startingDuration: Long) {
 
     Text(text = "Remaining time: ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}")
     Button(onClick = { handleButtonClick() }) {
-        Text(text = if (isCounting) "Pause" else if (startingDuration == remainingTime) "Start" else "Resume")
+        Text(text = if (isCounting) "Pause" else if (isNewCounter) "Start" else "Resume")
     }
     TimeIncrementButtons(handleClick = { increaseTimer(it) })
 }
