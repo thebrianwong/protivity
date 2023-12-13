@@ -25,18 +25,28 @@ fun Timer(startingDuration: Long) {
 
     var timer by remember {
         mutableStateOf(ProtivityCountDownTimer(
-            0, { }
+            0, { }, {}
         ))
     }
 
     fun formatTime(timeUnit: Int) = if (timeUnit < 10) "0$timeUnit" else timeUnit
+
+    fun resetTimer() {
+        timer =
+            ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) }, { resetTimer() })
+        remainingTime = startingDuration
+        isCounting = false
+    }
 
     fun handleButtonClick() {
         if (isCounting) {
             timer.cancel()
             isCounting = false
         } else {
-            timer = ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) })
+            timer = ProtivityCountDownTimer(
+                remainingTime,
+                { updateRemainingTime(it) },
+                { resetTimer() })
             timer.start()
             isCounting = true
         }
@@ -45,14 +55,16 @@ fun Timer(startingDuration: Long) {
     fun increaseTimer(timeIncrement: Long) {
         remainingTime += timeIncrement * 1000
         timer.cancel()
-        timer = ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) })
+        timer =
+            ProtivityCountDownTimer(remainingTime, { updateRemainingTime(it) }, { resetTimer() })
         if (isCounting) {
             timer.start()
         }
     }
 
     DisposableEffect(key1 = startingDuration) {
-        timer = ProtivityCountDownTimer(startingDuration, { updateRemainingTime(it) })
+        timer =
+            ProtivityCountDownTimer(startingDuration, { updateRemainingTime(it) }, { resetTimer() })
         remainingTime = startingDuration
         if (isCounting) {
             timer.start()
@@ -67,5 +79,5 @@ fun Timer(startingDuration: Long) {
     Button(onClick = { handleButtonClick() }) {
         Text(text = if (isCounting) "Pause" else if (startingDuration == remainingTime) "Start" else "Resume")
     }
-    TimeIncrementButtons(handleClick = {increaseTimer(it)})
+    TimeIncrementButtons(handleClick = { increaseTimer(it) })
 }
