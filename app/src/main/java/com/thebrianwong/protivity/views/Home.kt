@@ -41,6 +41,8 @@ fun Home() {
         ) {
             if (duration != null) {
                 Timer(startingDuration = duration!!)
+            } else {
+                Text(text = "Click on the \"+\" to add a timer!")
             }
             if (displayModal) {
                 TimeModal(
