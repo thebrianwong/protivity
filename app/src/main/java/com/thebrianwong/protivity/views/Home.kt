@@ -46,10 +46,10 @@ fun Home() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(horizontal = 48.dp, vertical = 128.dp)
+                .padding(top = 64.dp, end = 48.dp, bottom = 128.dp, start = 48.dp)
                 .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
-                .padding(horizontal = 16.dp),
+                .padding(32.dp),
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
