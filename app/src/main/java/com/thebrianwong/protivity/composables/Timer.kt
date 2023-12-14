@@ -1,5 +1,11 @@
 package com.thebrianwong.protivity.composables
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -9,6 +15,9 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
 
 @Composable
@@ -17,7 +26,7 @@ fun Timer(startingDuration: Long) {
     val hours = (remainingTime / 3600 / 1000).toInt()
     val minutes = ((remainingTime / 1000 - (hours * 3600)) / 60).toInt()
     val seconds = (remainingTime / 1000 - (hours * 3600) - (minutes * 60)).toInt()
-    var isNewCounter by remember { mutableStateOf(true)}
+    var isNewCounter by remember { mutableStateOf(true) }
     var isCounting by remember { mutableStateOf(false) }
 
     fun updateRemainingTime(newTime: Long) {
@@ -79,9 +88,14 @@ fun Timer(startingDuration: Long) {
         }
     }
 
-    Text(text = "Remaining time: ${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}")
-    Button(onClick = { handleButtonClick() }) {
+    Text(
+        text = "${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}",
+        fontSize = 64.sp
+    )
+    Spacer(modifier = Modifier.size(16.dp))
+    Button(onClick = { handleButtonClick() }, modifier = Modifier.animateContentSize()) {
         Text(text = if (isCounting) "Pause" else if (isNewCounter) "Start" else "Resume")
     }
+    Spacer(modifier = Modifier.size(16.dp))
     TimeIncrementButtons(handleClick = { increaseTimer(it) })
 }
