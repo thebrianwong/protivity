@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Divider
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -57,6 +58,7 @@ fun Home() {
         ) {
             if (duration != null) {
                 Timer(startingDuration = duration!!)
+                Divider(modifier = Modifier.padding(bottom = 8.dp))
                 ChatGPTTextWindow()
             } else {
                 Text(text = "Click on the \"+\" to add a timer!")

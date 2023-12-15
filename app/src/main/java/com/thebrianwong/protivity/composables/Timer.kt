@@ -13,6 +13,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -106,7 +107,7 @@ fun Timer(startingDuration: Long) {
         Text(text = if (isCounting) "Pause" else if (isNewCounter) "Start" else "Resume")
     }
     TimeIncrementButtons(handleClick = { increaseTimer(it) })
-    Button(onClick = { resetTimer() }, enabled = !isCounting, modifier = Modifier.padding(vertical = 16.dp)) {
+    Button(onClick = { resetTimer() }, enabled = !isCounting, modifier = Modifier.padding(top = 16.dp)) {
         Text(text = "Reset")
     }
 }
