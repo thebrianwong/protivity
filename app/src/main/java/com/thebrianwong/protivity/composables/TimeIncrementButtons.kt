@@ -11,14 +11,11 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TimeIncrementButtons(handleClick: (Long) -> Unit) {
     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-        Button(modifier = Modifier.weight(1f), onClick = { handleClick(1) }) {
-            Text(text = "+1s")
-        }
-        Button(modifier = Modifier.weight(1f), onClick = { handleClick(5) }) {
-            Text(text = "+5s")
-        }
-        Button(modifier = Modifier.weight(1f), onClick = { handleClick(15) }) {
-            Text(text = "+15s")
+        val timeIncrements = listOf<Long>(1, 5, 15)
+        timeIncrements.forEach { increment ->
+            Button(modifier = Modifier.weight(1f), onClick = { handleClick(increment) }) {
+                Text(text = "+${increment}s")
+            }
         }
     }
 }
