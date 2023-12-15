@@ -112,18 +112,4 @@ fun Timer(startingDuration: Long) {
     Button(onClick = { resetTimer() }, enabled = !isCounting) {
         Text(text = "Reset")
     }
-    Spacer(modifier = Modifier.size(32.dp))
-    Box(modifier = Modifier.clip(RoundedCornerShape(20.dp))) {
-
-        Text(
-            text = "INSERT CHATGPT HERE INSERT CHATGPT HERE INSERT CHATGPT HERE INSERT CHATGPT HERE INSERT CHATGPT HERE INSERT CHATGPT HERE INSERT CHATGPT HERE INSERT CHATGPT HERE INSERT CHATGPT HERE ",
-            modifier = Modifier
-                .verticalScroll(
-                    rememberScrollState()
-                )
-                .background(MaterialTheme.colorScheme.tertiaryContainer)
-                .padding(8.dp),
-            textAlign = TextAlign.Justify
-        )
-    }
 }

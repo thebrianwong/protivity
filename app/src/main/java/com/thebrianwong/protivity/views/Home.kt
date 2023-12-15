@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.unit.dp
+import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
@@ -55,6 +56,7 @@ fun Home() {
         ) {
             if (duration != null) {
                 Timer(startingDuration = duration!!)
+                ChatGPTTextWindow()
             } else {
                 Text(text = "Click on the \"+\" to add a timer!")
             }
