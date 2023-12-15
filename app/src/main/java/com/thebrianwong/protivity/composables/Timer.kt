@@ -102,14 +102,11 @@ fun Timer(startingDuration: Long) {
         text = "${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}",
         fontSize = 64.sp
     )
-    Spacer(modifier = Modifier.size(16.dp))
     Button(onClick = { handleButtonClick() }, modifier = Modifier.animateContentSize()) {
         Text(text = if (isCounting) "Pause" else if (isNewCounter) "Start" else "Resume")
     }
-    Spacer(modifier = Modifier.size(16.dp))
     TimeIncrementButtons(handleClick = { increaseTimer(it) })
-    Spacer(modifier = Modifier.size(32.dp))
-    Button(onClick = { resetTimer() }, enabled = !isCounting) {
+    Button(onClick = { resetTimer() }, enabled = !isCounting, modifier = Modifier.padding(vertical = 16.dp)) {
         Text(text = "Reset")
     }
 }
