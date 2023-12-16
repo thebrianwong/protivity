@@ -7,7 +7,7 @@ class ProtivityCountDownTimer(
     val updateTimeCounter: (Long) -> Unit,
     val handleOnFinish: () -> Unit
 ) :
-    CountDownTimer(duration, 1000) {
+    CountDownTimer(duration, 1) {
     override fun onTick(newTime: Long) {
         updateTimeCounter(newTime)
     }
