@@ -108,7 +108,6 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
 
                         )
                 }
-                Text(text = "$hours $minutes $seconds")
             }
         }
     )
