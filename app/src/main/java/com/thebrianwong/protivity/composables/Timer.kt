@@ -1,17 +1,24 @@
 package com.thebrianwong.protivity.composables
 
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
@@ -24,6 +31,12 @@ fun Timer(startingDuration: Long) {
     val seconds = (remainingTime / 1000 - (hours * 3600) - (minutes * 60)).toInt()
     var isNewCounter by remember { mutableStateOf(true) }
     var isCounting by remember { mutableStateOf(false) }
+    val indicatorProgress = animateFloatAsState(
+        targetValue = (startingDuration - remainingTime) / startingDuration.toFloat(),
+        animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
+        label = "Timer Progress",
+        visibilityThreshold = 0.1f
+    )
 
     fun updateRemainingTime(newTime: Long) {
         remainingTime = newTime
@@ -84,6 +97,11 @@ fun Timer(startingDuration: Long) {
         }
     }
 
+    CircularProgressIndicator(
+        progress = indicatorProgress.value,
+        strokeWidth = 4.dp,
+        trackColor = MaterialTheme.colorScheme.inverseOnSurface
+    )
     Text(
         text = "${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}",
         fontSize = 64.sp
