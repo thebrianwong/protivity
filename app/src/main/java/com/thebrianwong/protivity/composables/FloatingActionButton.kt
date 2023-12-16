@@ -9,13 +9,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
 
 @Composable
 fun FloatingActionButton(handleClick: () -> Unit) {
     IconButton(
         onClick = { handleClick() },
-        modifier = Modifier.background(MaterialTheme.colorScheme.primary, CircleShape)
+        modifier = Modifier
+            .shadow(elevation = 8.dp, shape = CircleShape)
+            .background(MaterialTheme.colorScheme.primary, CircleShape)
     ) {
         Icon(
             imageVector = Icons.Default.Add,
