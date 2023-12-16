@@ -80,7 +80,9 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
             )
         },
         title = { Text(text = "New Timer") },
-        modifier = Modifier.padding(horizontal = 16.dp).shadow(elevation = 8.dp, shape = RoundedCornerShape(32.dp)),
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(32.dp)),
         text = {
             Column(
                 verticalArrangement = Arrangement.Center,
@@ -92,25 +94,22 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
                         label = "HH",
                         modifier = Modifier.weight(1f),
                         finalInput = false,
-                        handleValueChange = { handleUserInput(it, "hours", 99) },
-
-                        )
+                        handleValueChange = { handleUserInput(it, "hours", 99) }
+                    )
                     TimeModalInput(
                         value = minutes,
                         label = "MM",
                         modifier = Modifier.weight(1f),
                         finalInput = false,
-                        handleValueChange = { handleUserInput(it, "minutes", 59) },
-
-                        )
+                        handleValueChange = { handleUserInput(it, "minutes", 59) }
+                    )
                     TimeModalInput(
                         value = seconds,
                         label = "SS",
                         modifier = Modifier.weight(1f),
                         finalInput = true,
-                        handleValueChange = { handleUserInput(it, "seconds", 59) },
-
-                        )
+                        handleValueChange = { handleUserInput(it, "seconds", 59) }
+                    )
                 }
             }
         }
