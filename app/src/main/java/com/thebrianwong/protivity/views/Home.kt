@@ -44,7 +44,7 @@ fun Home() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(it)
-                .padding(top = 64.dp, end = 48.dp, bottom = 128.dp, start = 48.dp)
+                .padding(vertical = 64.dp, horizontal = 48.dp)
                 .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
                 .background(MaterialTheme.colorScheme.secondaryContainer)
                 .padding(32.dp),
