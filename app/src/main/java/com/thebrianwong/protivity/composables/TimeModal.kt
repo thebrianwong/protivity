@@ -70,7 +70,7 @@ fun TimeModal(newTimer: Boolean, handleConfirm: (Long) -> Unit, handleDismiss: (
         icon = {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_timer_24),
-                contentDescription = "New Timer"
+                contentDescription = "Clock Timer"
             )
         },
         title = { Text(text = if (newTimer) "New Timer" else "Edit Timer") },
