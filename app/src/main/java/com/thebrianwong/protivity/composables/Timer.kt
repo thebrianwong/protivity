@@ -35,15 +35,14 @@ fun Timer(startingDuration: Long) {
         label = "Timer Progress",
         visibilityThreshold = 0.1f
     )
-
-    fun updateRemainingTime(newTime: Long) {
-        remainingTime = newTime
-    }
-
     var timer by remember {
         mutableStateOf(ProtivityCountDownTimer(
             0, { }, {}
         ))
+    }
+
+    fun updateRemainingTime(newTime: Long) {
+        remainingTime = newTime
     }
 
     fun formatTime(timeUnit: Int) = if (timeUnit < 10) "0$timeUnit" else timeUnit
