@@ -94,6 +94,7 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
                         label = "HH",
                         modifier = Modifier.weight(1f),
                         finalInput = false,
+                        focusFirst = true,
                         handleValueChange = { handleUserInput(it, "hours", 99) }
                     )
                     TimeModalInput(
@@ -101,6 +102,7 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
                         label = "MM",
                         modifier = Modifier.weight(1f),
                         finalInput = false,
+                        focusFirst = false,
                         handleValueChange = { handleUserInput(it, "minutes", 59) }
                     )
                     TimeModalInput(
@@ -108,6 +110,7 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
                         label = "SS",
                         modifier = Modifier.weight(1f),
                         finalInput = true,
+                        focusFirst = false,
                         handleValueChange = { handleUserInput(it, "seconds", 59) }
                     )
                 }

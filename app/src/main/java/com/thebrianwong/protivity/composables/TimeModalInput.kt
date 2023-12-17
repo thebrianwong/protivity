@@ -14,7 +14,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -26,9 +29,12 @@ fun TimeModalInput(
     label: String,
     modifier: Modifier,
     finalInput: Boolean,
+    focusFirst: Boolean,
     handleValueChange: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
+    val focusRequester = remember { FocusRequester() }
+    var initialCompose by remember { mutableStateOf(true)}
 
     Column(
         modifier = modifier,
@@ -45,6 +51,13 @@ fun TimeModalInput(
         TextField(
             modifier = Modifier
                 .width(64.dp)
+                .focusRequester(focusRequester)
+                .onGloballyPositioned {
+                    if (focusFirst && initialCompose) {
+                        focusRequester.requestFocus()
+                        initialCompose = false
+                    }
+                }
                 .onFocusChanged { state ->
                     if (!state.isFocused && !initialComposition) {
                         handleEmptyInput()
