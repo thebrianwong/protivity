@@ -40,9 +40,12 @@ fun Home() {
     Scaffold(
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
-            FloatingActionButton({
-                displayModal = true
-            })
+            FloatingActionButton(
+                newTimer = duration == null,
+                handleClick = {
+                    displayModal = true
+                }
+            )
         }
     ) {
         Column(
@@ -65,6 +68,7 @@ fun Home() {
             }
             if (displayModal) {
                 TimeModal(
+                    newTimer = duration == null,
                     handleConfirm = { duration = it },
                     handleDismiss = { displayModal = false }
                 )

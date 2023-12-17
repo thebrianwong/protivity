@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -14,7 +15,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun FloatingActionButton(handleClick: () -> Unit) {
+fun FloatingActionButton(newTimer: Boolean, handleClick: () -> Unit) {
     IconButton(
         onClick = { handleClick() },
         modifier = Modifier
@@ -22,7 +23,7 @@ fun FloatingActionButton(handleClick: () -> Unit) {
             .background(MaterialTheme.colorScheme.primary, CircleShape)
     ) {
         Icon(
-            imageVector = Icons.Default.Add,
+            imageVector = if (newTimer) Icons.Default.Add else Icons.Default.Edit,
             contentDescription = "Add New Timer.",
             tint = Color.White
         )

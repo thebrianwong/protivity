@@ -30,7 +30,7 @@ import androidx.compose.ui.window.DialogProperties
 import com.thebrianwong.protivity.R
 
 @Composable
-fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
+fun TimeModal(newTimer: Boolean, handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
     var hours by remember { mutableStateOf<Long?>(null) }
     var minutes by remember { mutableStateOf<Long?>(null) }
     var seconds by remember { mutableStateOf<Long?>(null) }
@@ -79,7 +79,7 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
                 contentDescription = "New Timer"
             )
         },
-        title = { Text(text = "New Timer") },
+        title = { Text(text = if (newTimer) "New Timer" else "Edit Timer") },
         modifier = Modifier
             .padding(horizontal = 16.dp)
             .shadow(elevation = 8.dp, shape = RoundedCornerShape(32.dp)),
@@ -122,5 +122,5 @@ fun TimeModal(handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
 @Preview(showBackground = true)
 @Composable
 fun PreviewTimeModal() {
-    TimeModal(handleConfirm = {}, handleDismiss = {})
+    TimeModal(newTimer = true, handleConfirm = {}, handleDismiss = {})
 }
