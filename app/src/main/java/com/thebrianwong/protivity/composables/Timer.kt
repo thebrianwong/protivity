@@ -1,7 +1,12 @@
 package com.thebrianwong.protivity.composables
 
+import android.content.res.Configuration
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -15,7 +20,9 @@ import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
@@ -28,7 +35,7 @@ fun Timer(startingDuration: Long) {
     val seconds = (remainingTime / 1000 - (hours * 3600) - (minutes * 60)).toInt()
     var isNewCounter by remember { mutableStateOf(true) }
     var isCounting by remember { mutableStateOf(false) }
-    var indicatorMax by remember { mutableLongStateOf(startingDuration)}
+    var indicatorMax by remember { mutableLongStateOf(startingDuration) }
     val indicatorProgress = animateFloatAsState(
         targetValue = (indicatorMax - remainingTime) / indicatorMax.toFloat(),
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,
@@ -40,6 +47,7 @@ fun Timer(startingDuration: Long) {
             0, { }, {}
         ))
     }
+    val configuration = LocalConfiguration.current
 
     fun updateRemainingTime(newTime: Long) {
         remainingTime = newTime
@@ -98,28 +106,70 @@ fun Timer(startingDuration: Long) {
         }
     }
 
-    CircularProgressIndicator(
-        progress = indicatorProgress.value,
-        strokeWidth = 4.dp,
-        trackColor = MaterialTheme.colorScheme.inverseOnSurface
-    )
-    Text(
-        text = "${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}",
-        fontSize = 64.sp
-    )
-    Button(
-        onClick = { handleButtonClick() },
-        modifier = Modifier.animateContentSize(),
-        enabled = startingDuration != 0L || remainingTime != 0L
-    ) {
-        Text(text = if (isCounting) "Pause" else if (isNewCounter) "Start" else "Resume")
-    }
-    TimeIncrementButtons(handleClick = { increaseTimer(it) })
-    Button(
-        onClick = { resetTimer() },
-        enabled = !isCounting,
-        modifier = Modifier.padding(top = 16.dp)
-    ) {
-        Text(text = "Reset")
+    if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        CircularProgressIndicator(
+            progress = indicatorProgress.value,
+            strokeWidth = 4.dp,
+            trackColor = MaterialTheme.colorScheme.inverseOnSurface
+        )
+        Text(
+            text = "${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}",
+            fontSize = 64.sp
+        )
+        Button(
+            onClick = { handleButtonClick() },
+            modifier = Modifier.animateContentSize(),
+            enabled = startingDuration != 0L || remainingTime != 0L
+        ) {
+            Text(text = if (isCounting) "Pause" else if (isNewCounter) "Start" else "Resume")
+        }
+        TimeIncrementButtons(handleClick = { increaseTimer(it) })
+        Button(
+            onClick = { resetTimer() },
+            enabled = !isCounting,
+            modifier = Modifier.padding(top = 16.dp)
+        ) {
+            Text(text = "Reset")
+        }
+    } else {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            Row(
+                horizontalArrangement = Arrangement.SpaceAround,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                CircularProgressIndicator(
+                    progress = indicatorProgress.value,
+                    strokeWidth = 4.dp,
+                    trackColor = MaterialTheme.colorScheme.inverseOnSurface,
+                    modifier = Modifier.padding(end = 4.dp)
+                )
+                Text(
+                    text = "${formatTime(hours)}:${formatTime(minutes)}:${formatTime(seconds)}",
+                    fontSize = 64.sp
+                )
+            }
+            TimeIncrementButtons(handleClick = { increaseTimer(it) })
+        }
+        Column(
+            modifier = Modifier
+                .fillMaxWidth(0.33f)
+                .padding(horizontal = 4.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Button(
+                onClick = { handleButtonClick() },
+                modifier = Modifier.animateContentSize(),
+                enabled = startingDuration != 0L || remainingTime != 0L
+            ) {
+                Text(text = if (isCounting) "Pause" else if (isNewCounter) "Start" else "Resume")
+            }
+            Button(
+                onClick = { resetTimer() },
+                enabled = !isCounting,
+                modifier = Modifier.padding(top = 16.dp)
+            ) {
+                Text(text = "Reset")
+            }
+        }
     }
 }
