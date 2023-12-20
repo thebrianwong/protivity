@@ -25,14 +25,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
 
 @Composable
-fun Home() {
-    var duration by remember { mutableStateOf<Long?>(null) }
+fun Home(viewModel: TimerViewModel) {
+    val duration by remember { mutableStateOf(viewModel.timer.value) }
     var displayModal by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val modifier = Modifier
@@ -46,7 +47,7 @@ fun Home() {
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FloatingActionButton(
-                newTimer = duration == null,
+                newTimer = viewModel.timer.value == null,
                 handleClick = {
                     displayModal = true
                 }
@@ -59,8 +60,8 @@ fun Home() {
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (duration != null) {
-                    Timer(startingDuration = duration!!)
+                if (viewModel.timer.value != null) {
+                    Timer(timer = viewModel)
                     Divider(modifier = Modifier.padding(bottom = 8.dp))
                     ChatGPTTextWindow()
                 } else {
@@ -69,7 +70,7 @@ fun Home() {
                 if (displayModal) {
                     TimeModal(
                         newTimer = duration == null,
-                        handleConfirm = { duration = it },
+                        handleConfirm = { viewModel.createTimer(it) },
                         handleDismiss = { displayModal = false }
                     )
                 }
@@ -80,11 +81,13 @@ fun Home() {
                 horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (duration != null) {
-                    Timer(startingDuration = duration!!)
-                    Divider(modifier = Modifier
-                        .fillMaxHeight()
-                        .width(1.dp))
+                if (viewModel.timer.value != null) {
+                    Timer(timer = viewModel)
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(1.dp)
+                    )
                     ChatGPTTextWindow()
                 } else {
                     Text(text = "Click on the \"+\" to add a timer!")
@@ -92,7 +95,7 @@ fun Home() {
                 if (displayModal) {
                     TimeModal(
                         newTimer = duration == null,
-                        handleConfirm = { duration = it },
+                        handleConfirm = { viewModel.createTimer(it) },
                         handleDismiss = { displayModal = false }
                     )
                 }
