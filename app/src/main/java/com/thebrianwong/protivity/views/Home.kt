@@ -33,7 +33,6 @@ import com.thebrianwong.protivity.composables.Timer
 
 @Composable
 fun Home(viewModel: TimerViewModel) {
-    val duration by remember { mutableStateOf(viewModel.timer.value) }
     var displayModal by remember { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val modifier = Modifier
@@ -69,7 +68,7 @@ fun Home(viewModel: TimerViewModel) {
                 }
                 if (displayModal) {
                     TimeModal(
-                        newTimer = duration == null,
+                        newTimer = viewModel.timer.value == null,
                         handleConfirm = {
                             viewModel.disposeTimer()
                             viewModel.createTimer(it)
@@ -97,7 +96,7 @@ fun Home(viewModel: TimerViewModel) {
                 }
                 if (displayModal) {
                     TimeModal(
-                        newTimer = duration == null,
+                        newTimer = viewModel.timer.value == null,
                         handleConfirm = {
                             viewModel.disposeTimer()
                             viewModel.createTimer(it)
