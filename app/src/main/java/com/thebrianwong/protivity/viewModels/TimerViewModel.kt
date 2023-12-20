@@ -45,13 +45,6 @@ class TimerViewModel : ViewModel() {
         _isCounting.value = false
     }
 
-    fun createTimer(time: Long) {
-        _timer.value = ProtivityCountDownTimer(time, { handleTick(it) }, { resetTimer() })
-        _startingTime.longValue = time
-        _remainingTime.longValue = time
-        _maxTime.longValue = time
-    }
-
     fun startOrPauseTimer() {
         if (_isCounting.value) {
             _timer.value?.cancel()
@@ -82,17 +75,18 @@ class TimerViewModel : ViewModel() {
         }
     }
 
-    fun onCompose(time: Long) {
-        createTimer(time)
+    fun createTimer(time: Long) {
+        _timer.value = ProtivityCountDownTimer(time, { handleTick(it) }, { resetTimer() })
         _startingTime.longValue = time
         _remainingTime.longValue = time
+        _maxTime.longValue = time
         if (_isCounting.value) {
             _timer.value?.start()
         }
         _isNewCounter.value = true
     }
 
-    fun handleDispose() {
+    fun disposeTimer() {
         _timer.value?.cancel()
         _isCounting.value = false
     }

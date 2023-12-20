@@ -70,7 +70,10 @@ fun Home(viewModel: TimerViewModel) {
                 if (displayModal) {
                     TimeModal(
                         newTimer = duration == null,
-                        handleConfirm = { viewModel.createTimer(it) },
+                        handleConfirm = {
+                            viewModel.disposeTimer()
+                            viewModel.createTimer(it)
+                        },
                         handleDismiss = { displayModal = false }
                     )
                 }
@@ -95,7 +98,10 @@ fun Home(viewModel: TimerViewModel) {
                 if (displayModal) {
                     TimeModal(
                         newTimer = duration == null,
-                        handleConfirm = { viewModel.createTimer(it) },
+                        handleConfirm = {
+                            viewModel.disposeTimer()
+                            viewModel.createTimer(it)
+                        },
                         handleDismiss = { displayModal = false }
                     )
                 }

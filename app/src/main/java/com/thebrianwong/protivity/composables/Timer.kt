@@ -14,7 +14,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ProgressIndicatorDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
@@ -33,13 +32,6 @@ fun Timer(timer: TimerViewModel) {
     val configuration = LocalConfiguration.current
 
     fun formatTime(timeUnit: Int) = if (timeUnit < 10) "0$timeUnit" else timeUnit
-
-    DisposableEffect(key1 = timer.startingTime.longValue) {
-        timer.onCompose(timer.startingTime.longValue)
-        onDispose {
-            timer.handleDispose()
-        }
-    }
 
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         CircularProgressIndicator(
