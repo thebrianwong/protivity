@@ -66,16 +66,6 @@ fun Home(viewModel: TimerViewModel) {
                 } else {
                     Text(text = "Click on the \"+\" to add a timer!")
                 }
-                if (displayModal) {
-                    TimeModal(
-                        newTimer = viewModel.timer.value == null,
-                        handleConfirm = {
-                            viewModel.disposeTimer()
-                            viewModel.createTimer(it)
-                        },
-                        handleDismiss = { displayModal = false }
-                    )
-                }
             }
         } else {
             Row(
@@ -94,17 +84,17 @@ fun Home(viewModel: TimerViewModel) {
                 } else {
                     Text(text = "Click on the \"+\" to add a timer!")
                 }
-                if (displayModal) {
-                    TimeModal(
-                        newTimer = viewModel.timer.value == null,
-                        handleConfirm = {
-                            viewModel.disposeTimer()
-                            viewModel.createTimer(it)
-                        },
-                        handleDismiss = { displayModal = false }
-                    )
-                }
             }
+        }
+        if (displayModal) {
+            TimeModal(
+                newTimer = viewModel.timer.value == null,
+                handleConfirm = {
+                    viewModel.disposeTimer()
+                    viewModel.createTimer(it)
+                },
+                handleDismiss = { displayModal = false }
+            )
         }
     }
 }
