@@ -41,13 +41,7 @@ fun TimeModalInput(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-
-        fun handleEmptyInput() {
-            if (value?.toString() == null) {
-                handleValueChange("0")
-            }
-        }
-
+        Text(text = label)
         TextField(
             modifier = Modifier
                 .width(64.dp)
@@ -59,11 +53,8 @@ fun TimeModalInput(
                 }
                 .onFocusChanged { state ->
                     if (!initialComposition) {
-                        // tap out of input
-                        if (!state.isFocused) {
-                            handleEmptyInput()
                         // tap into input
-                        } else {
+                        if (state.isFocused) {
                             handleFocusChange(label)
                         }
                     } else {
@@ -71,10 +62,9 @@ fun TimeModalInput(
                     }
                 },
             value = value?.toString() ?: "",
-            placeholder = { Text(text = "0") },
+            placeholder = { Text(text = "00") },
             onValueChange = { handleValueChange(it) },
             singleLine = true,
-            label = { Text(text = label) },
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
                 imeAction = if (finalInput) ImeAction.Done else ImeAction.Next
@@ -82,11 +72,9 @@ fun TimeModalInput(
             keyboardActions = KeyboardActions(
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Right)
-                    handleEmptyInput()
                 },
                 onDone = {
                     focusManager.clearFocus()
-                    handleEmptyInput()
                 }
             )
         )
