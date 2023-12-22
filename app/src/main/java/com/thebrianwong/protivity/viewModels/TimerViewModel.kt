@@ -80,9 +80,6 @@ class TimerViewModel : ViewModel() {
         _startingTime.longValue = time
         _remainingTime.longValue = time
         _maxTime.longValue = time
-        if (_isCounting.value) {
-            _timer.value?.start()
-        }
         _isNewCounter.value = true
     }
 
