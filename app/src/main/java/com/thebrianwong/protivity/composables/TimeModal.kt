@@ -99,9 +99,3 @@ fun TimeModal(
         }
     )
 }
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewTimeModal() {
-    TimeModal(newTimer = true, handleConfirm = {}, handleDismiss = {})
-}
