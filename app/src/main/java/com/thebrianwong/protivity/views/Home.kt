@@ -18,7 +18,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,10 +30,11 @@ import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
+import com.thebrianwong.protivity.viewModels.ModalViewModel
 
 @Composable
-fun Home(viewModel: TimerViewModel) {
-    var displayModal by remember { mutableStateOf(false) }
+fun Home(timerViewModel: TimerViewModel, modalViewModel: ModalViewModel) {
+    var displayModal by rememberSaveable { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val modifier = Modifier
         .fillMaxSize()
@@ -46,9 +47,10 @@ fun Home(viewModel: TimerViewModel) {
         floatingActionButtonPosition = FabPosition.End,
         floatingActionButton = {
             FloatingActionButton(
-                newTimer = viewModel.timer.value == null,
+                newTimer = timerViewModel.timer.value == null,
                 handleClick = {
                     displayModal = true
+                    modalViewModel.handleOpenModal()
                 }
             )
         }
@@ -59,8 +61,8 @@ fun Home(viewModel: TimerViewModel) {
                 verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                if (viewModel.timer.value != null) {
-                    Timer(timer = viewModel)
+                if (timerViewModel.timer.value != null) {
+                    Timer(timer = timerViewModel)
                     Divider(modifier = Modifier.padding(bottom = 8.dp))
                     ChatGPTTextWindow()
                 } else {
@@ -73,8 +75,8 @@ fun Home(viewModel: TimerViewModel) {
                 horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                if (viewModel.timer.value != null) {
-                    Timer(timer = viewModel)
+                if (timerViewModel.timer.value != null) {
+                    Timer(timer = timerViewModel)
                     Divider(
                         modifier = Modifier
                             .fillMaxHeight()
@@ -88,10 +90,11 @@ fun Home(viewModel: TimerViewModel) {
         }
         if (displayModal) {
             TimeModal(
-                newTimer = viewModel.timer.value == null,
+                modalViewModel = modalViewModel,
+                newTimer = timerViewModel.timer.value == null,
                 handleConfirm = {
-                    viewModel.disposeTimer()
-                    viewModel.createTimer(it)
+                    timerViewModel.disposeTimer()
+                    timerViewModel.createTimer(it)
                 },
                 handleDismiss = { displayModal = false }
             )

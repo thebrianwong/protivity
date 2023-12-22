@@ -12,42 +12,26 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.DialogProperties
 import com.thebrianwong.protivity.R
+import com.thebrianwong.protivity.viewModels.ModalViewModel
 
 @Composable
-fun TimeModal(newTimer: Boolean, handleConfirm: (Long) -> Unit, handleDismiss: () -> Unit) {
-    var hours by remember { mutableStateOf<Long?>(null) }
-    var minutes by remember { mutableStateOf<Long?>(null) }
-    var seconds by remember { mutableStateOf<Long?>(null) }
-
-    fun handleUserInput(newValue: String, valueType: String, maxValue: Long) {
-        val newValueLong = newValue.toLongOrNull()
-        if ((newValueLong == null) || (newValueLong <= maxValue)) {
-            when (valueType) {
-                "hours" -> hours = newValueLong
-                "minutes" -> minutes = newValueLong
-                "seconds" -> seconds = newValueLong
-            }
-        }
-    }
-
-    fun calculateInputTime(): Long {
-        val inputHours = hours ?: 0
-        val inputMinutes = minutes ?: 0
-        val inputSeconds = seconds ?: 0
-        val hoursToSeconds = inputHours * 3600
-        val minutesToSeconds = inputMinutes * 60
-        val inputTimeMilliseconds = (hoursToSeconds + minutesToSeconds + inputSeconds) * 1000
-        return inputTimeMilliseconds
+fun TimeModal(
+    modalViewModel: ModalViewModel,
+    newTimer: Boolean,
+    handleConfirm: (Long) -> Unit,
+    handleDismiss: () -> Unit
+) {
+    var currentlyFocused by rememberSaveable {
+        mutableStateOf("HH")
     }
 
     AlertDialog(
@@ -55,7 +39,7 @@ fun TimeModal(newTimer: Boolean, handleConfirm: (Long) -> Unit, handleDismiss: (
         properties = DialogProperties(dismissOnBackPress = true, dismissOnClickOutside = true),
         confirmButton = {
             Button(onClick = {
-                val userInputTime = calculateInputTime()
+                val userInputTime = modalViewModel.calculateInputTime()
                 handleConfirm(userInputTime)
                 handleDismiss()
             }) {
@@ -84,28 +68,31 @@ fun TimeModal(newTimer: Boolean, handleConfirm: (Long) -> Unit, handleDismiss: (
             ) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TimeModalInput(
-                        value = hours,
+                        value = modalViewModel.hours.value,
                         label = "HH",
                         modifier = Modifier.weight(1f),
                         finalInput = false,
-                        focusFirst = true,
-                        handleValueChange = { handleUserInput(it, "hours", 99) }
+                        hasFocus = currentlyFocused == "HH",
+                        handleValueChange = { modalViewModel.handleUserInput(it, "hours", 99) },
+                        handleFocusChange = { currentlyFocused = it }
                     )
                     TimeModalInput(
-                        value = minutes,
+                        value = modalViewModel.minutes.value,
                         label = "MM",
                         modifier = Modifier.weight(1f),
                         finalInput = false,
-                        focusFirst = false,
-                        handleValueChange = { handleUserInput(it, "minutes", 59) }
+                        hasFocus = currentlyFocused == "MM",
+                        handleValueChange = { modalViewModel.handleUserInput(it, "minutes", 59) },
+                        handleFocusChange = { currentlyFocused = it }
                     )
                     TimeModalInput(
-                        value = seconds,
+                        value = modalViewModel.seconds.value,
                         label = "SS",
                         modifier = Modifier.weight(1f),
                         finalInput = true,
-                        focusFirst = false,
-                        handleValueChange = { handleUserInput(it, "seconds", 59) }
+                        hasFocus = currentlyFocused == "SS",
+                        handleValueChange = { modalViewModel.handleUserInput(it, "seconds", 59) },
+                        handleFocusChange = { currentlyFocused = it }
                     )
                 }
             }

@@ -29,18 +29,18 @@ fun TimeModalInput(
     label: String,
     modifier: Modifier,
     finalInput: Boolean,
-    focusFirst: Boolean,
-    handleValueChange: (String) -> Unit
+    hasFocus: Boolean,
+    handleValueChange: (String) -> Unit,
+    handleFocusChange: (String) -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
-    var initialCompose by remember { mutableStateOf(true)}
+    var initialComposition by remember { mutableStateOf(true) }
 
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        var initialComposition by remember { mutableStateOf(true) }
 
         fun handleEmptyInput() {
             if (value?.toString() == null) {
@@ -53,14 +53,19 @@ fun TimeModalInput(
                 .width(64.dp)
                 .focusRequester(focusRequester)
                 .onGloballyPositioned {
-                    if (focusFirst && initialCompose) {
+                    if (hasFocus) {
                         focusRequester.requestFocus()
-                        initialCompose = false
                     }
                 }
                 .onFocusChanged { state ->
-                    if (!state.isFocused && !initialComposition) {
-                        handleEmptyInput()
+                    if (!initialComposition) {
+                        // tap out of input
+                        if (!state.isFocused) {
+                            handleEmptyInput()
+                        // tap into input
+                        } else {
+                            handleFocusChange(label)
+                        }
                     } else {
                         initialComposition = false
                     }
