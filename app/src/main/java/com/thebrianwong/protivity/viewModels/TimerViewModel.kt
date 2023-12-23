@@ -1,9 +1,15 @@
 package com.thebrianwong.protivity.viewModels
 
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.ViewModel
+import com.thebrianwong.protivity.classes.DataStoreKeys
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
+import kotlinx.coroutines.flow.map
 
 class TimerViewModel : ViewModel() {
     private val _timer = mutableStateOf<ProtivityCountDownTimer?>(null)
@@ -13,12 +19,18 @@ class TimerViewModel : ViewModel() {
     private val _isNewCounter = mutableStateOf(true)
     private val _isCounting = mutableStateOf(false)
 
+    private val _dataStore = mutableStateOf<DataStore<Preferences>?>(null)
+
     val timer = _timer
     val startingTime = _startingTime
     val remainingTime = _remainingTime
     val maxTime = _maxTime
     val isNewCounter = _isNewCounter
     val isCounting = _isCounting
+
+    fun setDataStore(dataStore: DataStore<Preferences>) {
+        _dataStore.value = dataStore
+    }
 
     fun getHours(): Int {
         return (_remainingTime.longValue / 3600 / 1000).toInt()

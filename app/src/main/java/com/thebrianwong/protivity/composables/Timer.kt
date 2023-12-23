@@ -19,10 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 
 @Composable
-fun Timer(timer: TimerViewModel) {
+fun Timer(timer: TimerViewModel, dataStore: DataStore<Preferences>) {
     val indicatorProgress = animateFloatAsState(
         targetValue = (timer.maxTime.longValue - timer.remainingTime.longValue) / timer.maxTime.longValue.toFloat(),
         animationSpec = ProgressIndicatorDefaults.ProgressAnimationSpec,

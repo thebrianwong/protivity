@@ -16,8 +16,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -25,15 +27,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.unit.dp
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import com.thebrianwong.protivity.classes.DataStoreKeys
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
 import com.thebrianwong.protivity.viewModels.ModalViewModel
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 @Composable
-fun Home(timerViewModel: TimerViewModel, modalViewModel: ModalViewModel) {
+fun Home(
+    timerViewModel: TimerViewModel,
+    modalViewModel: ModalViewModel,
+    dataStore: DataStore<Preferences>
+) {
     var displayModal by rememberSaveable { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
     val modifier = Modifier
@@ -42,6 +54,7 @@ fun Home(timerViewModel: TimerViewModel, modalViewModel: ModalViewModel) {
         .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
         .background(MaterialTheme.colorScheme.secondaryContainer)
         .padding(32.dp)
+    val coroutineScope = rememberCoroutineScope()
 
     Scaffold(
         floatingActionButtonPosition = FabPosition.End,
@@ -62,7 +75,7 @@ fun Home(timerViewModel: TimerViewModel, modalViewModel: ModalViewModel) {
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (timerViewModel.timer.value != null) {
-                    Timer(timer = timerViewModel)
+                    Timer(timer = timerViewModel, dataStore = dataStore)
                     Divider(modifier = Modifier.padding(bottom = 8.dp))
                     ChatGPTTextWindow()
                 } else {
@@ -76,7 +89,7 @@ fun Home(timerViewModel: TimerViewModel, modalViewModel: ModalViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (timerViewModel.timer.value != null) {
-                    Timer(timer = timerViewModel)
+                    Timer(timer = timerViewModel, dataStore = dataStore)
                     Divider(
                         modifier = Modifier
                             .fillMaxHeight()
@@ -95,6 +108,13 @@ fun Home(timerViewModel: TimerViewModel, modalViewModel: ModalViewModel) {
                 handleConfirm = {
                     timerViewModel.disposeTimer()
                     timerViewModel.createTimer(it)
+                    coroutineScope.launch {
+                        dataStore.edit { timerValues ->
+                            timerValues[DataStoreKeys.STARTING_TIME.key] = it
+                            timerValues[DataStoreKeys.REMAINING_TIME.key] = it
+                            timerValues[DataStoreKeys.MAX_TIME.key] = it
+                        }
+                    }
                 },
                 handleDismiss = { displayModal = false }
             )
