@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -23,9 +24,11 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val coroutine = rememberCoroutineScope()
             val timerViewModel: TimerViewModel = viewModel()
             val modalViewModel: ModalViewModel = viewModel()
             timerViewModel.setDataStore(dataStore)
+            timerViewModel.setCoroutine(coroutine)
             ProtivityTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(

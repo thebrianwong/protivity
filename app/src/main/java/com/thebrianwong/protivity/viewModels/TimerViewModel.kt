@@ -1,15 +1,15 @@
 package com.thebrianwong.protivity.viewModels
 
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import com.thebrianwong.protivity.classes.DataStoreKeys
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 class TimerViewModel : ViewModel() {
     private val _timer = mutableStateOf<ProtivityCountDownTimer?>(null)
@@ -19,6 +19,7 @@ class TimerViewModel : ViewModel() {
     private val _isNewCounter = mutableStateOf(true)
     private val _isCounting = mutableStateOf(false)
 
+    private val _coroutine = mutableStateOf<CoroutineScope?>(null)
     private val _dataStore = mutableStateOf<DataStore<Preferences>?>(null)
 
     val timer = _timer
@@ -27,6 +28,10 @@ class TimerViewModel : ViewModel() {
     val maxTime = _maxTime
     val isNewCounter = _isNewCounter
     val isCounting = _isCounting
+
+    fun setCoroutine(coroutineScope: CoroutineScope) {
+        _coroutine.value = coroutineScope
+    }
 
     fun setDataStore(dataStore: DataStore<Preferences>) {
         _dataStore.value = dataStore
@@ -46,6 +51,11 @@ class TimerViewModel : ViewModel() {
 
     private fun handleTick(newTime: Long) {
         _remainingTime.longValue = newTime
+        _coroutine.value?.launch {
+            _dataStore.value?.edit { timerValues ->
+                timerValues[DataStoreKeys.REMAINING_TIME.key] = newTime
+            }
+        }
     }
 
     fun resetTimer() {
@@ -55,6 +65,12 @@ class TimerViewModel : ViewModel() {
         _maxTime.longValue = _startingTime.longValue
         _isNewCounter.value = true
         _isCounting.value = false
+        _coroutine.value?.launch {
+            _dataStore.value?.edit { timerValues ->
+                timerValues[DataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                timerValues[DataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
+            }
+        }
     }
 
     fun startOrPauseTimer() {
@@ -76,6 +92,22 @@ class TimerViewModel : ViewModel() {
         _remainingTime.longValue += timeIncrement * 1000
         if (_remainingTime.longValue > _maxTime.longValue) {
             _maxTime.longValue = _remainingTime.longValue
+            _coroutine.value?.launch {
+                _dataStore.value?.edit { timerValues ->
+                    timerValues[DataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                    println(_remainingTime.longValue)
+                    println(_maxTime.longValue)
+                    timerValues[DataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
+                }
+            }
+        } else {
+            _coroutine.value?.launch {
+                _dataStore.value?.edit { timerValues ->
+                    timerValues[DataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                    println(_remainingTime.longValue)
+                    println(_maxTime.longValue)
+                }
+            }
         }
         _timer.value?.cancel()
         _timer.value = ProtivityCountDownTimer(
@@ -93,6 +125,13 @@ class TimerViewModel : ViewModel() {
         _remainingTime.longValue = time
         _maxTime.longValue = time
         _isNewCounter.value = true
+        _coroutine.value?.launch {
+            _dataStore.value?.edit { timerValues ->
+                timerValues[DataStoreKeys.STARTING_TIME.key] = time
+                timerValues[DataStoreKeys.REMAINING_TIME.key] = time
+                timerValues[DataStoreKeys.MAX_TIME.key] = time
+            }
+        }
     }
 
     fun disposeTimer() {
