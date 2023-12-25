@@ -6,7 +6,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
-import com.thebrianwong.protivity.classes.DataStoreKeys
+import com.thebrianwong.protivity.classes.BoolDataStoreKeys
+import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -53,7 +54,7 @@ class TimerViewModel : ViewModel() {
         _remainingTime.longValue = newTime
         _coroutine.value?.launch {
             _dataStore.value?.edit { timerValues ->
-                timerValues[DataStoreKeys.REMAINING_TIME.key] = newTime
+                timerValues[LongDataStoreKeys.REMAINING_TIME.key] = newTime
             }
         }
     }
@@ -67,8 +68,9 @@ class TimerViewModel : ViewModel() {
         _isCounting.value = false
         _coroutine.value?.launch {
             _dataStore.value?.edit { timerValues ->
-                timerValues[DataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
-                timerValues[DataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
+                timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                timerValues[LongDataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
+                timerValues[BoolDataStoreKeys.NEW_COUNTER.key] = true
             }
         }
     }
@@ -85,6 +87,11 @@ class TimerViewModel : ViewModel() {
             _timer.value?.start()
             _isCounting.value = true
             _isNewCounter.value = false
+            _coroutine.value?.launch {
+                _dataStore.value?.edit { timerValues ->
+                    timerValues[BoolDataStoreKeys.NEW_COUNTER.key] = false
+                }
+            }
         }
     }
 
@@ -94,18 +101,14 @@ class TimerViewModel : ViewModel() {
             _maxTime.longValue = _remainingTime.longValue
             _coroutine.value?.launch {
                 _dataStore.value?.edit { timerValues ->
-                    timerValues[DataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
-                    println(_remainingTime.longValue)
-                    println(_maxTime.longValue)
-                    timerValues[DataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
+                    timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                    timerValues[LongDataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
                 }
             }
         } else {
             _coroutine.value?.launch {
                 _dataStore.value?.edit { timerValues ->
-                    timerValues[DataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
-                    println(_remainingTime.longValue)
-                    println(_maxTime.longValue)
+                    timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
                 }
             }
         }
@@ -127,11 +130,20 @@ class TimerViewModel : ViewModel() {
         _isNewCounter.value = true
         _coroutine.value?.launch {
             _dataStore.value?.edit { timerValues ->
-                timerValues[DataStoreKeys.STARTING_TIME.key] = time
-                timerValues[DataStoreKeys.REMAINING_TIME.key] = time
-                timerValues[DataStoreKeys.MAX_TIME.key] = time
+                timerValues[LongDataStoreKeys.STARTING_TIME.key] = time
+                timerValues[LongDataStoreKeys.REMAINING_TIME.key] = time
+                timerValues[LongDataStoreKeys.MAX_TIME.key] = time
+                timerValues[BoolDataStoreKeys.NEW_COUNTER.key] = true
             }
         }
+    }
+
+    fun loadTimer(startingTime: Long, remainingTime: Long, maxTime: Long, isNewCounter: Boolean) {
+        _timer.value = ProtivityCountDownTimer(remainingTime, { handleTick(it) }, { resetTimer() })
+        _startingTime.longValue = startingTime
+        _remainingTime.longValue = remainingTime
+        _maxTime.longValue = maxTime
+        _isNewCounter.value = isNewCounter
     }
 
     fun disposeTimer() {

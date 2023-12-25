@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import com.thebrianwong.protivity.classes.DataStoreKeys
+import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
@@ -110,9 +110,9 @@ fun Home(
                     timerViewModel.createTimer(it)
                     coroutineScope.launch {
                         dataStore.edit { timerValues ->
-                            timerValues[DataStoreKeys.STARTING_TIME.key] = it
-                            timerValues[DataStoreKeys.REMAINING_TIME.key] = it
-                            timerValues[DataStoreKeys.MAX_TIME.key] = it
+                            timerValues[LongDataStoreKeys.STARTING_TIME.key] = it
+                            timerValues[LongDataStoreKeys.REMAINING_TIME.key] = it
+                            timerValues[LongDataStoreKeys.MAX_TIME.key] = it
                         }
                     }
                 },
