@@ -1,16 +1,25 @@
 package com.thebrianwong.protivity
 
+import android.Manifest
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.app.ActivityCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
@@ -26,9 +35,11 @@ import kotlinx.coroutines.flow.map
 class MainActivity : ComponentActivity() {
     val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "timer")
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            val context = LocalContext.current
             val coroutine = rememberCoroutineScope()
             val timerViewModel: TimerViewModel = viewModel()
             val modalViewModel: ModalViewModel = viewModel()
@@ -63,6 +74,38 @@ class MainActivity : ComponentActivity() {
                         savedStartingTime, savedRemainingTime, savedMaxTime, isNewCounter!!
                     )
                 }
+            }
+
+
+            val requestPermissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = { isGranted ->
+                    if (!isGranted) {
+                        val skippedRationaleDialog =
+                            ActivityCompat.shouldShowRequestPermissionRationale(
+                                context as MainActivity,
+                                Manifest.permission.POST_NOTIFICATIONS
+                            )
+
+                        if (skippedRationaleDialog) {
+                            Toast.makeText(
+                                context,
+                                "Enable notifications for optimal experience.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } else {
+                            Toast.makeText(
+                                context,
+                                "Enable notifications in Android Settings for optimal experience.",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
+                    }
+                }
+            )
+
+            LaunchedEffect(context) {
+                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
             }
 
             ProtivityTheme {
