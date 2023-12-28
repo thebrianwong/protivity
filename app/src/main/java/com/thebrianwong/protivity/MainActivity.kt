@@ -1,6 +1,7 @@
 package com.thebrianwong.protivity
 
 import android.Manifest
+import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -8,6 +9,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Vibrator
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -77,9 +79,11 @@ class MainActivity : ComponentActivity() {
                 .setSmallIcon(R.drawable.baseline_timer_24)
                 .setContentTitle("Title")
                 .setContentText("Text")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_VIBRATE)
+                .setVibrate(longArrayOf(1000,1000,1000))
                 .addAction(R.drawable.baseline_timer_24, "stopping", stopPendingIntent)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
 
@@ -121,7 +125,7 @@ class MainActivity : ComponentActivity() {
                         val skippedRationaleDialog =
                             ActivityCompat.shouldShowRequestPermissionRationale(
                                 context as MainActivity,
-                                Manifest.permission.POST_NOTIFICATIONS
+                                Manifest.permission.VIBRATE
                             )
 
                         if (skippedRationaleDialog) {
@@ -144,17 +148,25 @@ class MainActivity : ComponentActivity() {
             LaunchedEffect(context) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 
-                val notiChannel = NotificationChannel("timerUp", "myTest", NotificationManager.IMPORTANCE_DEFAULT).apply { description = "myDescription" }
+                val notiChannel = NotificationChannel("timerUp", "myTest", NotificationManager.IMPORTANCE_HIGH).apply { description = "myDescription" }
+
+                notiChannel.enableVibration(true)
                 val notiManager: NotificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
                 notiManager.createNotificationChannel(notiChannel)
 
                 with(NotificationManagerCompat.from(context)) {
                     val permissionUtils = PermissionUtils(context)
                     if (permissionUtils.hasNotificationPermission()) {
+                        builder.setDefaults(Notification.DEFAULT_VIBRATE)
+                        builder.setVibrate(longArrayOf(1000, 1000, 1000))
                         notify(0, builder.build())
                     }
                 }
-                builder.build()
+//                builder.setVibrate(longArrayOf(1000, 1000, 1000))
+//                builder.setDefaults(Notification.DEFAULT_VIBRATE)
+//                builder.build()
+
+
             }
 
             ProtivityTheme {
