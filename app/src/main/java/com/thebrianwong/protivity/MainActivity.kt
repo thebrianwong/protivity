@@ -83,8 +83,13 @@ class MainActivity : ComponentActivity() {
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setVibrate(longArrayOf(1000,1000,1000))
-                .addAction(R.drawable.baseline_timer_24, "stopping", stopPendingIntent)
+                .setOngoing(true)
+                .setOnlyAlertOnce(false)
+                .setAutoCancel(true)
+                .setDefaults(Notification.FLAG_INSISTENT)
+//                .setDefaults(Notification.DEFAULT_SOUND)
+//                .setVibrate(longArrayOf(1000,1000,1000))
+//                .addAction(R.drawable.baseline_timer_24, "stopping", stopPendingIntent)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
 
             if (timerViewModel.timer.value == null) {
@@ -125,7 +130,7 @@ class MainActivity : ComponentActivity() {
                         val skippedRationaleDialog =
                             ActivityCompat.shouldShowRequestPermissionRationale(
                                 context as MainActivity,
-                                Manifest.permission.VIBRATE
+                                Manifest.permission.POST_NOTIFICATIONS
                             )
 
                         if (skippedRationaleDialog) {
@@ -157,16 +162,9 @@ class MainActivity : ComponentActivity() {
                 with(NotificationManagerCompat.from(context)) {
                     val permissionUtils = PermissionUtils(context)
                     if (permissionUtils.hasNotificationPermission()) {
-                        builder.setDefaults(Notification.DEFAULT_VIBRATE)
-                        builder.setVibrate(longArrayOf(1000, 1000, 1000))
                         notify(0, builder.build())
                     }
                 }
-//                builder.setVibrate(longArrayOf(1000, 1000, 1000))
-//                builder.setDefaults(Notification.DEFAULT_VIBRATE)
-//                builder.build()
-
-
             }
 
             ProtivityTheme {
