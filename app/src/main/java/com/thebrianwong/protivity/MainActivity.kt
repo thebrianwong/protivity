@@ -9,7 +9,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Vibrator
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -41,9 +40,9 @@ import com.thebrianwong.protivity.viewModels.ModalViewModel
 import com.thebrianwong.protivity.views.Home
 import kotlinx.coroutines.flow.map
 
-class MainActivity : ComponentActivity() {
-    val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "timer")
+val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "timer")
 
+class MainActivity : ComponentActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,41 +55,21 @@ class MainActivity : ComponentActivity() {
             timerViewModel.setCoroutine(coroutine)
 
 
-            val intent = Intent(context, PermissionUtils::class.java).apply {
-                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK
             }
 
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 1, intent, PendingIntent.FLAG_IMMUTABLE)
-
-            val stopIntent = Intent(this, PermissionUtils::class.java).apply {
-//                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                action = "stop"
-                putExtra("timerUp", 0)
-            }
-
-            val stopPendingIntent: PendingIntent = PendingIntent.getBroadcast(context, 1, stopIntent,
-                PendingIntent.FLAG_IMMUTABLE)
-
-            val fullScreenIntent = Intent(context, PermissionUtils::class.java)
-            val fullScreenPendingIntent = PendingIntent.getActivity(context, 0,
-                fullScreenIntent, PendingIntent.FLAG_IMMUTABLE)
+            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_MUTABLE)
 
             var builder = NotificationCompat.Builder(context, "timerUp")
                 .setSmallIcon(R.drawable.baseline_timer_24)
                 .setContentTitle("Title")
                 .setContentText("Text")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .setDefaults(Notification.DEFAULT_VIBRATE)
-                .setOngoing(true)
-                .setOnlyAlertOnce(false)
-                .setAutoCancel(true)
-                .setDefaults(Notification.FLAG_INSISTENT)
-//                .setDefaults(Notification.DEFAULT_SOUND)
-//                .setVibrate(longArrayOf(1000,1000,1000))
-//                .addAction(R.drawable.baseline_timer_24, "stopping", stopPendingIntent)
-                .setFullScreenIntent(fullScreenPendingIntent, true)
+                .setVibrate(longArrayOf(1000,1000,1000))
+                .setFullScreenIntent(pendingIntent, true)
 
             if (timerViewModel.timer.value == null) {
                 val savedTimerValues = dataStore.data.map { preferences ->
@@ -162,7 +141,8 @@ class MainActivity : ComponentActivity() {
                 with(NotificationManagerCompat.from(context)) {
                     val permissionUtils = PermissionUtils(context)
                     if (permissionUtils.hasNotificationPermission()) {
-                        notify(0, builder.build())
+                        val notification = builder.build()
+                        notify(10, notification)
                     }
                 }
             }
