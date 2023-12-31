@@ -21,35 +21,30 @@ class NotificationUtils(private val context: Context) {
     }
     private val pendingIntent: PendingIntent =
         PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_MUTABLE)
-    private val builder = NotificationCompat.Builder(context, "timerUp")
+    private val notificationBuilder = NotificationCompat.Builder(context, "protivityChannel")
         .setSmallIcon(R.drawable.baseline_timer_24)
-        .setContentTitle("Title")
-        .setContentText("Text")
+        .setContentTitle("Protivity")
+        .setContentText("Time's Up!")
         .setPriority(NotificationCompat.PRIORITY_HIGH)
         .setAutoCancel(true)
         .setDefaults(Notification.DEFAULT_VIBRATE)
         .setVibrate(longArrayOf(1000, 1000, 1000))
         .setFullScreenIntent(pendingIntent, true)
-    private val notiChannel = NotificationChannel(
-        "timerUp",
-        "myTest",
+    private val notificationChannel = NotificationChannel(
+        "protivityChannel",
+        "Protivity Timer",
         NotificationManager.IMPORTANCE_HIGH
-    ).apply { description = "myDescription" }
+    ).apply { description = "The notification for when the Protivity timer is up." }
 
     fun dispatchNotification() {
-        val notiManager: NotificationManager =
+        val notificationManager: NotificationManager =
             getSystemService(context, NotificationManager::class.java) as NotificationManager
-        notiChannel.enableVibration(true)
-        notiManager.createNotificationChannel(notiChannel)
+        notificationChannel.enableVibration(true)
+        notificationManager.createNotificationChannel(notificationChannel)
+        val notification = notificationBuilder.build()
 
         with(NotificationManagerCompat.from(context)) {
-            val permissionUtils = PermissionUtils(context)
-            if (permissionUtils.hasNotificationPermission()) {
-                val notification = builder.build()
-                notify(10, notification)
-            }
+            notify(10, notification)
         }
-
     }
-
 }
