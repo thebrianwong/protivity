@@ -75,7 +75,7 @@ fun Home(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (timerViewModel.timer.value != null) {
-                    Timer(timer = timerViewModel, dataStore = dataStore)
+                    Timer(timer = timerViewModel)
                     Divider(modifier = Modifier.padding(bottom = 8.dp))
                     ChatGPTTextWindow()
                 } else {
@@ -89,7 +89,7 @@ fun Home(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 if (timerViewModel.timer.value != null) {
-                    Timer(timer = timerViewModel, dataStore = dataStore)
+                    Timer(timer = timerViewModel)
                     Divider(
                         modifier = Modifier
                             .fillMaxHeight()
