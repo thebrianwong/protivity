@@ -1,5 +1,7 @@
 package com.thebrianwong.protivity.viewModels
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
@@ -8,6 +10,8 @@ import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import com.thebrianwong.protivity.classes.BoolDataStoreKeys
 import com.thebrianwong.protivity.classes.LongDataStoreKeys
+import com.thebrianwong.protivity.classes.NotificationUtils
+import com.thebrianwong.protivity.classes.PermissionUtils
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
@@ -22,6 +26,8 @@ class TimerViewModel : ViewModel() {
 
     private val _coroutine = mutableStateOf<CoroutineScope?>(null)
     private val _dataStore = mutableStateOf<DataStore<Preferences>?>(null)
+    private val _permissionUtils = mutableStateOf<PermissionUtils?>(null)
+    private val _notificationUtils = mutableStateOf<NotificationUtils?>(null)
 
     val timer = _timer
     val startingTime = _startingTime
@@ -36,6 +42,14 @@ class TimerViewModel : ViewModel() {
 
     fun setDataStore(dataStore: DataStore<Preferences>) {
         _dataStore.value = dataStore
+    }
+
+    fun setPermissionUtils(permissionUtils: PermissionUtils) {
+        _permissionUtils.value = permissionUtils
+    }
+
+    fun setNotificationUtils(notificationUtils: NotificationUtils) {
+        _notificationUtils.value = notificationUtils
     }
 
     fun getHours(): Int {
@@ -59,9 +73,20 @@ class TimerViewModel : ViewModel() {
         }
     }
 
+    private fun dispatchTimerNotification() {
+        if ( _permissionUtils.value?.hasNotificationPermission() == true) {
+            _notificationUtils.value?.dispatchNotification()
+        }
+    }
+
+    private fun handleFinish() {
+        resetTimer()
+        dispatchTimerNotification()
+    }
+
     fun resetTimer() {
         _timer.value =
-            ProtivityCountDownTimer(_remainingTime.longValue, { handleTick(it) }, { resetTimer() })
+            ProtivityCountDownTimer(_remainingTime.longValue, { handleTick(it) }, { handleFinish() })
         _remainingTime.longValue = _startingTime.longValue
         _maxTime.longValue = _startingTime.longValue
         _isNewCounter.value = true
@@ -75,6 +100,7 @@ class TimerViewModel : ViewModel() {
         }
     }
 
+
     fun startOrPauseTimer() {
         if (_isCounting.value) {
             _timer.value?.cancel()
@@ -83,7 +109,7 @@ class TimerViewModel : ViewModel() {
             _timer.value = ProtivityCountDownTimer(
                 _remainingTime.longValue,
                 { handleTick(it) },
-                { resetTimer() })
+                { handleFinish() })
             _timer.value?.start()
             _isCounting.value = true
             _isNewCounter.value = false
@@ -116,14 +142,14 @@ class TimerViewModel : ViewModel() {
         _timer.value = ProtivityCountDownTimer(
             _remainingTime.longValue,
             { handleTick(it) },
-            { resetTimer() })
+            { handleFinish() })
         if (_isCounting.value) {
             _timer.value?.start()
         }
     }
 
     fun createTimer(time: Long) {
-        _timer.value = ProtivityCountDownTimer(time, { handleTick(it) }, { resetTimer() })
+        _timer.value = ProtivityCountDownTimer(time, { handleTick(it) }, { handleFinish() })
         _startingTime.longValue = time
         _remainingTime.longValue = time
         _maxTime.longValue = time
@@ -139,7 +165,7 @@ class TimerViewModel : ViewModel() {
     }
 
     fun loadTimer(startingTime: Long, remainingTime: Long, maxTime: Long, isNewCounter: Boolean) {
-        _timer.value = ProtivityCountDownTimer(remainingTime, { handleTick(it) }, { resetTimer() })
+        _timer.value = ProtivityCountDownTimer(remainingTime, { handleTick(it) }, { handleFinish() })
         _startingTime.longValue = startingTime
         _remainingTime.longValue = remainingTime
         _maxTime.longValue = maxTime

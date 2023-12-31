@@ -7,14 +7,12 @@ import android.app.PendingIntent
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.annotation.RequiresApi
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat.getSystemService
 import com.thebrianwong.protivity.MainActivity
 import com.thebrianwong.protivity.R
 
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class NotificationUtils(private val context: Context) {
     private val intent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK and Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -30,17 +28,23 @@ class NotificationUtils(private val context: Context) {
         .setDefaults(Notification.DEFAULT_VIBRATE)
         .setVibrate(longArrayOf(1000, 1000, 1000))
         .setFullScreenIntent(pendingIntent, true)
-    private val notificationChannel = NotificationChannel(
-        "protivityChannel",
-        "Protivity Timer",
-        NotificationManager.IMPORTANCE_HIGH
-    ).apply { description = "The notification for when the Protivity timer is up." }
+    private val notificationChannel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        NotificationChannel(
+            "protivityChannel",
+            "Protivity Timer",
+            NotificationManager.IMPORTANCE_HIGH
+        ).apply { description = "The notification for when the Protivity timer is up." }
+    } else {
+        null
+    }
 
     fun dispatchNotification() {
         val notificationManager: NotificationManager =
             getSystemService(context, NotificationManager::class.java) as NotificationManager
-        notificationChannel.enableVibration(true)
-        notificationManager.createNotificationChannel(notificationChannel)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationChannel != null) {
+            notificationChannel.enableVibration(true)
+            notificationManager.createNotificationChannel(notificationChannel)
+        }
         val notification = notificationBuilder.build()
 
         with(NotificationManagerCompat.from(context)) {

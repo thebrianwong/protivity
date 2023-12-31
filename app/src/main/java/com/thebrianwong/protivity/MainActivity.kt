@@ -45,8 +45,12 @@ class MainActivity : ComponentActivity() {
             val coroutine = rememberCoroutineScope()
             val timerViewModel: TimerViewModel = viewModel()
             val modalViewModel: ModalViewModel = viewModel()
+            val permissionUtils = PermissionUtils(context)
+            val notificationUtils = NotificationUtils(context)
             timerViewModel.setDataStore(dataStore)
             timerViewModel.setCoroutine(coroutine)
+            timerViewModel.setPermissionUtils(permissionUtils)
+            timerViewModel.setNotificationUtils(notificationUtils)
 
             if (timerViewModel.timer.value == null) {
                 val savedTimerValues = dataStore.data.map { preferences ->
@@ -108,12 +112,6 @@ class MainActivity : ComponentActivity() {
 
             LaunchedEffect(context) {
                 requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-
-                val permissionUtils = PermissionUtils(context)
-                if (permissionUtils.hasNotificationPermission()) {
-                    val notificationUtils = NotificationUtils(context)
-                    notificationUtils.dispatchNotification()
-                }
             }
 
             ProtivityTheme {
