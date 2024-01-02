@@ -21,17 +21,19 @@ import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun TimeModalInput(
-    value: Long?,
+    value: TextFieldValue,
     label: String,
     modifier: Modifier,
     finalInput: Boolean,
     hasFocus: Boolean,
-    handleValueChange: (String) -> Unit,
-    handleFocusChange: (String) -> Unit
+    handleValueChange: (String, Int) -> Unit,
+    handleFocusChange: (String) -> Unit,
+    highlightInputValue: () -> Unit
 ) {
     val focusManager = LocalFocusManager.current
     val focusRequester = remember { FocusRequester() }
@@ -56,14 +58,17 @@ fun TimeModalInput(
                         // tap into input
                         if (state.isFocused) {
                             handleFocusChange(label)
+                            highlightInputValue()
                         }
                     } else {
                         initialComposition = false
                     }
                 },
-            value = value?.toString() ?: "",
+            value = value,
             placeholder = { Text(text = "00") },
-            onValueChange = { handleValueChange(it) },
+            onValueChange = {
+                handleValueChange(it.text, it.text.length)
+            },
             singleLine = true,
             keyboardOptions = KeyboardOptions(
                 keyboardType = KeyboardType.Number,
@@ -75,6 +80,7 @@ fun TimeModalInput(
                 },
                 onDone = {
                     focusManager.clearFocus()
+                    handleFocusChange("")
                 }
             )
         )
