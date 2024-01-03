@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -51,6 +52,7 @@ class MainActivity : ComponentActivity() {
             timerViewModel.setCoroutine(coroutine)
             timerViewModel.setPermissionUtils(permissionUtils)
             timerViewModel.setNotificationUtils(notificationUtils)
+            timerViewModel.setWindow(window)
 
             if (timerViewModel.timer.value == null) {
                 val savedTimerValues = dataStore.data.map { preferences ->

@@ -1,6 +1,8 @@
 package com.thebrianwong.protivity.viewModels
 
 import android.os.Build
+import android.view.Window
+import android.view.WindowManager
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -23,6 +25,7 @@ class TimerViewModel : ViewModel() {
     private val _maxTime = mutableLongStateOf(_startingTime.longValue)
     private val _isNewCounter = mutableStateOf(true)
     private val _isCounting = mutableStateOf(false)
+    private val _window = mutableStateOf<Window?>(null)
 
     private val _coroutine = mutableStateOf<CoroutineScope?>(null)
     private val _dataStore = mutableStateOf<DataStore<Preferences>?>(null)
@@ -35,6 +38,7 @@ class TimerViewModel : ViewModel() {
     val maxTime = _maxTime
     val isNewCounter = _isNewCounter
     val isCounting = _isCounting
+    val window = _window
 
     fun setCoroutine(coroutineScope: CoroutineScope) {
         _coroutine.value = coroutineScope
@@ -50,6 +54,10 @@ class TimerViewModel : ViewModel() {
 
     fun setNotificationUtils(notificationUtils: NotificationUtils) {
         _notificationUtils.value = notificationUtils
+    }
+
+    fun setWindow(window: Window) {
+        _window.value = window
     }
 
     fun getHours(): Int {
@@ -79,9 +87,18 @@ class TimerViewModel : ViewModel() {
         }
     }
 
+    private fun enableScreenTimeout() {
+        window.value?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
+    private fun disableScreenTimeout() {
+        window.value?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+    }
+
     private fun handleFinish() {
         resetTimer()
         dispatchTimerNotification()
+        enableScreenTimeout()
     }
 
     fun resetTimer() {
@@ -105,6 +122,7 @@ class TimerViewModel : ViewModel() {
         if (_isCounting.value) {
             _timer.value?.cancel()
             _isCounting.value = false
+            enableScreenTimeout()
         } else {
             _timer.value = ProtivityCountDownTimer(
                 _remainingTime.longValue,
@@ -113,6 +131,7 @@ class TimerViewModel : ViewModel() {
             _timer.value?.start()
             _isCounting.value = true
             _isNewCounter.value = false
+            disableScreenTimeout()
             _coroutine.value?.launch {
                 _dataStore.value?.edit { timerValues ->
                     timerValues[BoolDataStoreKeys.NEW_COUNTER.key] = false
