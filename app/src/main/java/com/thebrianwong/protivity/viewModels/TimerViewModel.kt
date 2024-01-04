@@ -103,15 +103,15 @@ class TimerViewModel : ViewModel() {
 
     fun resetTimer() {
         _timer.value =
-            ProtivityCountDownTimer(_remainingTime.longValue, { handleTick(it) }, { handleFinish() })
+            ProtivityCountDownTimer(_startingTime.longValue, { handleTick(it) }, { handleFinish() })
         _remainingTime.longValue = _startingTime.longValue
         _maxTime.longValue = _startingTime.longValue
         _isNewCounter.value = true
         _isCounting.value = false
         _coroutine.value?.launch {
             _dataStore.value?.edit { timerValues ->
-                timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
-                timerValues[LongDataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
+                timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _startingTime.longValue
+                timerValues[LongDataStoreKeys.MAX_TIME.key] = _startingTime.longValue
                 timerValues[BoolDataStoreKeys.NEW_COUNTER.key] = true
             }
         }
@@ -142,18 +142,40 @@ class TimerViewModel : ViewModel() {
 
     fun increaseTimer(timeIncrement: Long) {
         _remainingTime.longValue += timeIncrement * 1000
+        if (!_isCounting.value) {
+            _startingTime.longValue = _remainingTime.longValue
+        }
         if (_remainingTime.longValue > _maxTime.longValue) {
             _maxTime.longValue = _remainingTime.longValue
-            _coroutine.value?.launch {
-                _dataStore.value?.edit { timerValues ->
-                    timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
-                    timerValues[LongDataStoreKeys.MAX_TIME.key] = _remainingTime.longValue
+            if (_isCounting.value) {
+                _coroutine.value?.launch {
+                    _dataStore.value?.edit { timerValues ->
+                        timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                        timerValues[LongDataStoreKeys.MAX_TIME.key] = maxTime.longValue
+                    }
+                }
+            } else {
+                _coroutine.value?.launch {
+                    _dataStore.value?.edit { timerValues ->
+                        timerValues[LongDataStoreKeys.STARTING_TIME.key] = _startingTime.longValue
+                        timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                        timerValues[LongDataStoreKeys.MAX_TIME.key] = _maxTime.longValue
+                    }
                 }
             }
         } else {
-            _coroutine.value?.launch {
-                _dataStore.value?.edit { timerValues ->
-                    timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+            if (_isCounting.value) {
+                _coroutine.value?.launch {
+                    _dataStore.value?.edit { timerValues ->
+                        timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                    }
+                }
+            } else {
+                _coroutine.value?.launch {
+                    _dataStore.value?.edit { timerValues ->
+                        timerValues[LongDataStoreKeys.STARTING_TIME.key] = _startingTime.longValue
+                        timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
+                    }
                 }
             }
         }
