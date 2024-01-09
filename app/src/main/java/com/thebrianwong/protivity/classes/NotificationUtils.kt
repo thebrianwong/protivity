@@ -30,14 +30,17 @@ class NotificationUtils(private val context: Context) {
             .setContentText("Time's Up!")
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setAutoCancel(true)
-            .setDefaults(Notification.DEFAULT_VIBRATE)
-            .setVibrate(longArrayOf(1000, 1000, 1000))
             .setFullScreenIntent(pendingIntent, true)
 
         val alarmSound: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val alarmAudioAttributes =
             AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build()
 
+        val vibPattern = longArrayOf(
+            0, 500, 50, 100, 50, 500, 50, 100, 50, 500,
+            1000, 500, 50, 100, 50, 500, 50, 100, 50, 500,
+            1000, 500, 50, 100, 50, 500, 50, 100, 50, 500
+        )
         val notificationChannel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel(
                 "protivityChannel",
@@ -45,7 +48,7 @@ class NotificationUtils(private val context: Context) {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "The notification for when the Protivity timer is up."
-                vibrationPattern = longArrayOf(1000, 1000, 1000)
+                vibrationPattern = vibPattern
                 setSound(
                     alarmSound,
                     alarmAudioAttributes
