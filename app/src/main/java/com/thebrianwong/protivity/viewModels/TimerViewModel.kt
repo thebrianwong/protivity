@@ -148,7 +148,7 @@ class TimerViewModel : ViewModel() {
                 _coroutine.value?.launch {
                     _dataStore.value?.edit { timerValues ->
                         timerValues[LongDataStoreKeys.REMAINING_TIME.key] = _remainingTime.longValue
-                        timerValues[LongDataStoreKeys.MAX_TIME.key] = maxTime.longValue
+                        timerValues[LongDataStoreKeys.MAX_TIME.key] = _maxTime.longValue
                     }
                 }
             } else {
