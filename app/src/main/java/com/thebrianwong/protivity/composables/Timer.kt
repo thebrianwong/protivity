@@ -37,7 +37,7 @@ fun Timer(timer: TimerViewModel) {
 
     if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
         CircularProgressIndicator(
-            progress = indicatorProgress.value,
+            progress = if (indicatorProgress.value.isNaN()) 0.0f else indicatorProgress.value,
             strokeWidth = 4.dp,
             trackColor = MaterialTheme.colorScheme.inverseOnSurface
         )
