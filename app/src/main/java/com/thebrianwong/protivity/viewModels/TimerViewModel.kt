@@ -38,7 +38,6 @@ class TimerViewModel : ViewModel() {
     val maxTime = _maxTime
     val isNewCounter = _isNewCounter
     val isCounting = _isCounting
-    val window = _window
 
     fun setCoroutine(coroutineScope: CoroutineScope) {
         _coroutine.value = coroutineScope
@@ -88,11 +87,11 @@ class TimerViewModel : ViewModel() {
     }
 
     private fun enableScreenTimeout() {
-        window.value?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        _window.value?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun disableScreenTimeout() {
-        window.value?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        _window.value?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
     }
 
     private fun handleFinish() {
