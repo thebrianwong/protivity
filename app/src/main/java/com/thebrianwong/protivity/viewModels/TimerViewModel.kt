@@ -1,9 +1,7 @@
 package com.thebrianwong.protivity.viewModels
 
-import android.os.Build
 import android.view.Window
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.datastore.core.DataStore
