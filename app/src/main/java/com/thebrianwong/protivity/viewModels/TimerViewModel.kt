@@ -30,6 +30,9 @@ class TimerViewModel : ViewModel() {
     private val _permissionUtils = mutableStateOf<PermissionUtils?>(null)
     private val _notificationUtils = mutableStateOf<NotificationUtils?>(null)
 
+    private val _generateText = mutableStateOf<((Long) -> Unit)?>(null)
+    private val _resetText = mutableStateOf<(() -> Unit)?>(null)
+
     val timer = _timer
     val startingTime = _startingTime
     val remainingTime = _remainingTime
@@ -55,6 +58,14 @@ class TimerViewModel : ViewModel() {
 
     fun setWindow(window: Window) {
         _window.value = window
+    }
+
+    fun setGenTextCallback(callback: (Long) -> Unit) {
+        _generateText.value = callback
+    }
+
+    fun setResetTextCallback(callback: () -> Unit) {
+        _resetText.value = callback
     }
 
     fun getHours(): Int {
@@ -93,6 +104,7 @@ class TimerViewModel : ViewModel() {
     }
 
     private fun handleFinish() {
+        _resetText.value?.let { it() }
         resetTimer()
         dispatchTimerNotification()
         enableScreenTimeout()
@@ -121,6 +133,9 @@ class TimerViewModel : ViewModel() {
             _isCounting.value = false
             enableScreenTimeout()
         } else {
+            if (_isNewCounter.value) {
+                _generateText.value?.let { it(_startingTime.longValue) }
+            }
             _timer.value = ProtivityCountDownTimer(
                 _remainingTime.longValue,
                 { handleTick(it) },
