@@ -36,6 +36,7 @@ import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
+import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -44,6 +45,7 @@ import kotlinx.coroutines.launch
 fun Home(
     timerViewModel: TimerViewModel,
     modalViewModel: ModalViewModel,
+    chatGPTViewModel: ChatGPTViewModel,
     dataStore: DataStore<Preferences>
 ) {
     var displayModal by rememberSaveable { mutableStateOf(false) }
@@ -71,13 +73,13 @@ fun Home(
         if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Column(
                 modifier = modifier.padding(it),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterVertically),
+                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (timerViewModel.timer.value != null) {
                     Timer(timer = timerViewModel)
                     Divider(modifier = Modifier.padding(bottom = 8.dp))
-                    ChatGPTTextWindow()
+                    ChatGPTTextWindow(chatGPTViewModel)
                 } else {
                     Text(text = "Click on the \"+\" to add a timer!")
                 }
@@ -95,7 +97,7 @@ fun Home(
                             .fillMaxHeight()
                             .width(1.dp)
                     )
-                    ChatGPTTextWindow()
+                    ChatGPTTextWindow(chatGPTViewModel)
                 } else {
                     Text(text = "Click on the \"+\" to add a timer!")
                 }
