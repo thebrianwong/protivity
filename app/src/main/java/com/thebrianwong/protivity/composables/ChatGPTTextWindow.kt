@@ -14,6 +14,7 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,6 +37,11 @@ fun ChatGPTTextWindow(viewModel: ChatGPTViewModel) {
         targetValue = if (viewModel.generatedText.value == "Break's Over!") 32f else LocalTextStyle.current.fontSize.value,
         label = "ChatGPT Text Size Animation."
     )
+    val scrollState = rememberScrollState()
+
+    LaunchedEffect(viewModel.generatedText.value) {
+        scrollState.scrollTo(0)
+    }
 
     Box(
         modifier = Modifier
@@ -49,9 +55,7 @@ fun ChatGPTTextWindow(viewModel: ChatGPTViewModel) {
             color = textColor,
             fontSize = textSize.sp,
             modifier = Modifier
-                .verticalScroll(
-                    rememberScrollState()
-                )
+                .verticalScroll(scrollState)
                 .clip(RoundedCornerShape(20.dp))
                 .fillMaxSize()
                 .padding(8.dp),
