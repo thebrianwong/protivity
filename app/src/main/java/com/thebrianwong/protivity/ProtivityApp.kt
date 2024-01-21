@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
@@ -40,7 +41,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
     val chatGPTViewModel: ChatGPTViewModel = viewModel()
     val apolloClient = ApolloClient.Builder()
-        .serverUrl("https://countries.trevorblades.com/graphql")
+        .serverUrl(stringResource(R.string.GRAPHQL_ENDPOINT))
         .build()
 
     timerViewModel.setDataStore(dataStore)

@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
     id("com.apollographql.apollo3") version "3.8.2"
 }
+val GRAPHQL_ENDPOINT by extra("http://10.0.2.2:4000/graphql")
 
 android {
     namespace = "com.thebrianwong.protivity"
@@ -22,12 +23,16 @@ android {
     }
 
     buildTypes {
+        debug {
+            resValue("string", "GRAPHQL_ENDPOINT", "http://10.0.2.2:4000/graphql")
+        }
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            resValue("string", "GRAPHQL_ENDPOINT", "PLACEHOLDER")
         }
     }
     compileOptions {
