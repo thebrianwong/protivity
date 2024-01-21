@@ -24,7 +24,7 @@ class ChatGPTViewModel : ViewModel() {
 
     fun generateText(timeDuration: Long) {
         _coroutine.value?.launch {
-            val serverResponse = _apolloClient.value?.query(Query(timeDuration.toInt()))?.execute()
+            val serverResponse = _apolloClient.value?.query(Query((timeDuration / 1000).toInt()))?.execute()
             val generatedText = serverResponse?.data?.aiText?.content
             _generatedText.value = generatedText
                 ?: "Uh oh! It seems that I've run out of fun facts at the moment. Try again later!"
