@@ -73,7 +73,10 @@ fun Home(
         if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
             Column(
                 modifier = modifier.padding(it),
-                verticalArrangement = Arrangement.spacedBy(16.dp, Alignment.Top),
+                verticalArrangement = (if (timerViewModel.timer.value != null) Arrangement.spacedBy(
+                    16.dp,
+                    Alignment.Top
+                ) else Arrangement.Center),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 if (timerViewModel.timer.value != null) {
