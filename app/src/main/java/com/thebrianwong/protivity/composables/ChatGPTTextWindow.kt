@@ -30,16 +30,16 @@ import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 @Composable
 fun ChatGPTTextWindow(viewModel: ChatGPTViewModel) {
     val textColor by animateColorAsState(
-        targetValue = if (viewModel.generatedText.value == "Break's Over!") Color.Red else Color.Black,
+        targetValue = if (viewModel.currentText.value == "Break's Over!") Color.Red else Color.Black,
         label = "ChatGPT Text Color Animation."
     )
     val textSize by animateFloatAsState(
-        targetValue = if (viewModel.generatedText.value == "Break's Over!") 32f else LocalTextStyle.current.fontSize.value,
+        targetValue = if (viewModel.currentText.value == "Break's Over!") 32f else LocalTextStyle.current.fontSize.value,
         label = "ChatGPT Text Size Animation."
     )
     val scrollState = rememberScrollState()
 
-    LaunchedEffect(viewModel.generatedText.value) {
+    LaunchedEffect(viewModel.currentText.value) {
         scrollState.scrollTo(0)
     }
 
@@ -51,7 +51,7 @@ fun ChatGPTTextWindow(viewModel: ChatGPTViewModel) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = viewModel.generatedText.value,
+            text = viewModel.currentText.value,
             color = textColor,
             fontSize = textSize.sp,
             modifier = Modifier
