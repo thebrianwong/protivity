@@ -115,7 +115,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     LaunchedEffect(context) {
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
         if (chatGPTViewModel.generatedText.value == "") {
-            chatGPTViewModel.generateText(10)
+            chatGPTViewModel.generateText(10000)
         }
     }
 
