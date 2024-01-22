@@ -52,7 +52,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
     chatGPTViewModel.setCoroutine(coroutine)
     chatGPTViewModel.setApolloClient(apolloClient)
-    timerViewModel.setGenTextCallback { chatGPTViewModel.generateText(it) }
+    timerViewModel.setGenTextCallback { chatGPTViewModel.changeDisplayText(it) }
     timerViewModel.setResetTextCallback { chatGPTViewModel.resetText() }
 
     if (timerViewModel.timer.value == null) {
@@ -114,8 +114,8 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
     LaunchedEffect(context) {
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
-        if (chatGPTViewModel.generatedText.value == "") {
-            chatGPTViewModel.generateText(10000)
+        if (chatGPTViewModel.initializing.value) {
+            chatGPTViewModel.initializeText(10000)
         }
     }
 
