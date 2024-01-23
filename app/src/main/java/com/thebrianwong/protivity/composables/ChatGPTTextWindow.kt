@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -50,16 +51,20 @@ fun ChatGPTTextWindow(viewModel: ChatGPTViewModel) {
             .fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = viewModel.currentText.value,
-            color = textColor,
-            fontSize = textSize.sp,
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .clip(RoundedCornerShape(20.dp))
-                .fillMaxSize()
-                .padding(8.dp),
-            textAlign = TextAlign.Center
-        )
+        if (viewModel.currentText.value != "") {
+            Text(
+                text = viewModel.currentText.value,
+                color = textColor,
+                fontSize = textSize.sp,
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .clip(RoundedCornerShape(20.dp))
+                    .fillMaxSize()
+                    .padding(8.dp),
+                textAlign = TextAlign.Center
+            )
+        } else {
+            CircularProgressIndicator()
+        }
     }
 }
