@@ -47,7 +47,6 @@ class ChatGPTViewModel : ViewModel() {
         if (_nextText.value == "" || _currentText.value == _nextText.value) {
             _currentText.value = ""
             generateText(timeDuration, true)
-            generateText(timeDuration)
         } else {
             _currentText.value = _nextText.value
             generateText(timeDuration)
