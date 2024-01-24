@@ -32,6 +32,7 @@ class TimerViewModel : ViewModel() {
 
     private val _generateText = mutableStateOf<((Long) -> Unit)?>(null)
     private val _resetText = mutableStateOf<(() -> Unit)?>(null)
+    private val _initialCountdown = mutableStateOf(true)
 
     val timer = _timer
     val startingTime = _startingTime
@@ -133,8 +134,9 @@ class TimerViewModel : ViewModel() {
             _isCounting.value = false
             enableScreenTimeout()
         } else {
-            if (_isNewCounter.value) {
+            if (_isNewCounter.value || _initialCountdown.value) {
                 _generateText.value?.let { it(_startingTime.longValue) }
+                _initialCountdown.value = false
             }
             _timer.value = ProtivityCountDownTimer(
                 _remainingTime.longValue,
