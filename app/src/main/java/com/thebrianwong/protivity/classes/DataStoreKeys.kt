@@ -11,5 +11,8 @@ enum class LongDataStoreKeys(val key: Preferences.Key<Long>) {
 }
 
 enum class BoolDataStoreKeys(val key: Preferences.Key<Boolean>) {
-    NEW_COUNTER(booleanPreferencesKey("newCounter"))
+    NEW_COUNTER(booleanPreferencesKey("newCounter")),
+    SHOULD_VIBRATE(booleanPreferencesKey("shouldVibrate")),
+    SHOULD_PLAY_ALARM(booleanPreferencesKey("shouldPlayAlarm")),
+    SHOULD_RESET_TEXT(booleanPreferencesKey("shouldResetValue"))
 }

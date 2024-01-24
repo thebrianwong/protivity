@@ -17,6 +17,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.apollographql.apollo3.ApolloClient
 import com.thebrianwong.protivity.classes.BoolDataStoreKeys
@@ -28,6 +29,7 @@ import com.thebrianwong.protivity.viewModels.ModalViewModel
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.views.Home
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
@@ -54,6 +56,15 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     chatGPTViewModel.setApolloClient(apolloClient)
     timerViewModel.setGenTextCallback { chatGPTViewModel.changeDisplayText(it) }
     timerViewModel.setResetTextCallback { chatGPTViewModel.resetText() }
+
+    val settings = dataStore.data.map { preferences ->
+        listOf(
+            preferences[BoolDataStoreKeys.SHOULD_VIBRATE.key],
+            preferences[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key],
+            preferences[BoolDataStoreKeys.SHOULD_RESET_TEXT.key]
+        )
+    }
+    val settingsArr: List<Boolean?> by settings.collectAsState(initial = listOf(null, null, null))
 
     if (timerViewModel.timer.value == null) {
         val savedTimerValues = dataStore.data.map { preferences ->
@@ -114,8 +125,19 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
     LaunchedEffect(context) {
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+
         if (chatGPTViewModel.initializing.value) {
             chatGPTViewModel.initializeText(10000)
+        }
+
+        if (settingsArr.contains(null)) {
+            coroutine.launch {
+                dataStore.edit { settingValues ->
+                    settingValues[BoolDataStoreKeys.SHOULD_VIBRATE.key] = true
+                    settingValues[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key] = true
+                    settingValues[BoolDataStoreKeys.SHOULD_RESET_TEXT.key] = true
+                }
+            }
         }
     }
 
