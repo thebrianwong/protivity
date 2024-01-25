@@ -13,6 +13,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,10 +31,12 @@ import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.thebrianwong.protivity.classes.BoolDataStoreKeys
 import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
+import com.thebrianwong.protivity.composables.SettingsDrawer
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
 import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
@@ -58,71 +61,76 @@ fun Home(
         .padding(32.dp)
     val coroutineScope = rememberCoroutineScope()
 
-    Scaffold(
-        floatingActionButtonPosition = FabPosition.End,
-        floatingActionButton = {
-            FloatingActionButton(
-                newTimer = timerViewModel.timer.value == null,
-                handleClick = {
-                    displayModal = true
-                    modalViewModel.handleOpenModal()
-                }
-            )
-        }
-    ) {
-        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            Column(
-                modifier = modifier.padding(it),
-                verticalArrangement = (if (timerViewModel.timer.value != null) Arrangement.spacedBy(
-                    16.dp,
-                    Alignment.Top
-                ) else Arrangement.Center),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                if (timerViewModel.timer.value != null) {
-                    Timer(timer = timerViewModel)
-                    Divider(modifier = Modifier.padding(bottom = 8.dp))
-                    ChatGPTTextWindow(chatGPTViewModel)
-                } else {
-                    Text(text = "Click on the \"+\" to add a timer!")
-                }
-            }
-        } else {
-            Row(
-                modifier = modifier.padding(it),
-                horizontalArrangement = Arrangement.spacedBy(16.dp, Alignment.CenterHorizontally),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                if (timerViewModel.timer.value != null) {
-                    Timer(timer = timerViewModel)
-                    Divider(
-                        modifier = Modifier
-                            .fillMaxHeight()
-                            .width(1.dp)
-                    )
-                    ChatGPTTextWindow(chatGPTViewModel)
-                } else {
-                    Text(text = "Click on the \"+\" to add a timer!")
-                }
-            }
-        }
-        if (displayModal) {
-            TimeModal(
-                modalViewModel = modalViewModel,
-                newTimer = timerViewModel.timer.value == null,
-                handleConfirm = {
-                    timerViewModel.disposeTimer()
-                    timerViewModel.createTimer(it)
-                    coroutineScope.launch {
-                        dataStore.edit { timerValues ->
-                            timerValues[LongDataStoreKeys.STARTING_TIME.key] = it
-                            timerValues[LongDataStoreKeys.REMAINING_TIME.key] = it
-                            timerValues[LongDataStoreKeys.MAX_TIME.key] = it
-                        }
+    ModalNavigationDrawer(drawerContent = { SettingsDrawer(dataStore = dataStore) }) {
+        Scaffold(
+            floatingActionButtonPosition = FabPosition.End,
+            floatingActionButton = {
+                FloatingActionButton(
+                    newTimer = timerViewModel.timer.value == null,
+                    handleClick = {
+                        displayModal = true
+                        modalViewModel.handleOpenModal()
                     }
-                },
-                handleDismiss = { displayModal = false }
-            )
+                )
+            }
+        ) {
+            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+                Column(
+                    modifier = modifier.padding(it),
+                    verticalArrangement = (if (timerViewModel.timer.value != null) Arrangement.spacedBy(
+                        16.dp,
+                        Alignment.Top
+                    ) else Arrangement.Center),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (timerViewModel.timer.value != null) {
+                        Timer(timer = timerViewModel)
+                        Divider(modifier = Modifier.padding(bottom = 8.dp))
+                        ChatGPTTextWindow(chatGPTViewModel)
+                    } else {
+                        Text(text = "Click on the \"+\" to add a timer!")
+                    }
+                }
+            } else {
+                Row(
+                    modifier = modifier.padding(it),
+                    horizontalArrangement = Arrangement.spacedBy(
+                        16.dp,
+                        Alignment.CenterHorizontally
+                    ),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    if (timerViewModel.timer.value != null) {
+                        Timer(timer = timerViewModel)
+                        Divider(
+                            modifier = Modifier
+                                .fillMaxHeight()
+                                .width(1.dp)
+                        )
+                        ChatGPTTextWindow(chatGPTViewModel)
+                    } else {
+                        Text(text = "Click on the \"+\" to add a timer!")
+                    }
+                }
+            }
+            if (displayModal) {
+                TimeModal(
+                    modalViewModel = modalViewModel,
+                    newTimer = timerViewModel.timer.value == null,
+                    handleConfirm = {
+                        timerViewModel.disposeTimer()
+                        timerViewModel.createTimer(it)
+                        coroutineScope.launch {
+                            dataStore.edit { timerValues ->
+                                timerValues[LongDataStoreKeys.STARTING_TIME.key] = it
+                                timerValues[LongDataStoreKeys.REMAINING_TIME.key] = it
+                                timerValues[LongDataStoreKeys.MAX_TIME.key] = it
+                            }
+                        }
+                    },
+                    handleDismiss = { displayModal = false }
+                )
+            }
         }
     }
 }
