@@ -23,12 +23,27 @@ import com.thebrianwong.protivity.R
 
 @Composable
 fun SettingsDrawer(dataStore: DataStore<Preferences>) {
+    val settingsIcons = listOf(
+        hashMapOf(
+            "setting" to "Alarm",
+            "icon" to R.drawable.baseline_alarm_on_24
+        ),
+        hashMapOf(
+            "setting" to "Vibrate",
+            "icon" to R.drawable.baseline_vibration_24
+        ),
+        hashMapOf(
+            "setting" to "Clear Text",
+            "icon" to R.drawable.baseline_check_24
+        ),
+    )
+
     ModalDrawerSheet {
         Column(
             modifier = Modifier
                 .padding(horizontal = 64.dp, vertical = 32.dp)
-                .widthIn(0.dp, 128.dp)
-                .border(3.dp, Color.Red)
+                .widthIn(0.dp, 175.dp)
+//                .border(3.dp, Color.Red)
             ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -37,44 +52,23 @@ fun SettingsDrawer(dataStore: DataStore<Preferences>) {
                 fontSize = 32.sp,
                 modifier = Modifier.padding(top = 32.dp, bottom = 48.dp)
             )
-            Row(
-                modifier = Modifier
-                    .padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_alarm_on_24),
-                    contentDescription = "Alarm Setting",
-                    modifier = Modifier.weight(1f)
-                )
-                Text(text = "Alarm", modifier = Modifier.weight(2.5f).padding(horizontal = 8.dp))
-                Switch(modifier = Modifier.weight(0.1f), checked = true, onCheckedChange = {})
-            }
-            Row(
-                modifier = Modifier.padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_vibration_24),
-                    contentDescription = "Vibrate Setting",
-                    modifier = Modifier.weight(1f)
-                )
-                Text(text = "Vibrate", modifier = Modifier.weight(2.5f).padding(horizontal = 8.dp))
-                Switch(modifier = Modifier.weight(0.1f), checked = true, onCheckedChange = {})
-            }
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.baseline_check_24),
-                    contentDescription = "Clear Text Setting",
-                    modifier = Modifier.weight(1f)
-                )
-                Text(text = "Clear Text",  modifier = Modifier.weight(2.5f).padding(horizontal = 8.dp))
-                Switch(modifier = Modifier.weight(0.1f), checked = true, onCheckedChange = {})
+            settingsIcons.forEach { data ->
+                val setting = data["setting"] as String
+                val icon = data["icon"] as Int
+
+                Row(
+                    modifier = Modifier.padding(bottom = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        painter = painterResource(id = icon),
+                        contentDescription = "$setting Setting",
+                        modifier = Modifier.weight(1f)
+                    )
+                    Text(text = setting, modifier = Modifier.weight(1f))
+                    Switch(checked = true, onCheckedChange = {}, modifier = Modifier.weight(1f))
+                }
             }
         }
     }
