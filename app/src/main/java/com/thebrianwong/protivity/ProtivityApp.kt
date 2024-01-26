@@ -26,6 +26,7 @@ import com.thebrianwong.protivity.classes.NotificationUtils
 import com.thebrianwong.protivity.classes.PermissionUtils
 import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
+import com.thebrianwong.protivity.viewModels.SettingsViewModel
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.views.Home
 import kotlinx.coroutines.flow.map
@@ -38,6 +39,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     val coroutine = rememberCoroutineScope()
     val timerViewModel: TimerViewModel = viewModel()
     val modalViewModel: ModalViewModel = viewModel()
+    val settingsViewModel: SettingsViewModel = viewModel()
     val permissionUtils = PermissionUtils(context)
     val notificationUtils = NotificationUtils(context)
 
@@ -56,15 +58,6 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     chatGPTViewModel.setApolloClient(apolloClient)
     timerViewModel.setGenTextCallback { chatGPTViewModel.changeDisplayText(it) }
     timerViewModel.setResetTextCallback { chatGPTViewModel.resetText() }
-
-    val settings = dataStore.data.map { preferences ->
-        listOf(
-            preferences[BoolDataStoreKeys.SHOULD_VIBRATE.key],
-            preferences[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key],
-            preferences[BoolDataStoreKeys.SHOULD_CLEAR_TEXT.key]
-        )
-    }
-    val settingsArr: List<Boolean?> by settings.collectAsState(initial = listOf(null, null, null))
 
     if (timerViewModel.timer.value == null) {
         val savedTimerValues = dataStore.data.map { preferences ->
@@ -95,6 +88,30 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
             )
         }
     }
+
+    val rawSettingsData = dataStore.data.map { settings ->
+        listOf(
+            settings[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key],
+            settings[BoolDataStoreKeys.SHOULD_VIBRATE.key],
+            settings[BoolDataStoreKeys.SHOULD_CLEAR_TEXT.key]
+        )
+    }
+    val settingsData: List<Boolean?> by rawSettingsData.collectAsState(
+        initial = listOf(
+            null,
+            null,
+            null
+        )
+    )
+    val alarmSetting = settingsData[0]
+    val vibrateSetting = settingsData[1]
+    val clearTextSetting = settingsData[2]
+    settingsViewModel.loadSettings(
+        alarmSetting ?: true,
+        vibrateSetting ?: true,
+        clearTextSetting ?: true
+    )
+
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -130,7 +147,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
             chatGPTViewModel.initializeText(10000)
         }
 
-        if (settingsArr.contains(null)) {
+        if (settingsData.contains(null)) {
             coroutine.launch {
                 dataStore.edit { settingValues ->
                     settingValues[BoolDataStoreKeys.SHOULD_VIBRATE.key] = true
