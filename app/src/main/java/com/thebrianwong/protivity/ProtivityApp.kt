@@ -61,7 +61,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         listOf(
             preferences[BoolDataStoreKeys.SHOULD_VIBRATE.key],
             preferences[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key],
-            preferences[BoolDataStoreKeys.SHOULD_RESET_TEXT.key]
+            preferences[BoolDataStoreKeys.SHOULD_CLEAR_TEXT.key]
         )
     }
     val settingsArr: List<Boolean?> by settings.collectAsState(initial = listOf(null, null, null))
@@ -135,7 +135,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
                 dataStore.edit { settingValues ->
                     settingValues[BoolDataStoreKeys.SHOULD_VIBRATE.key] = true
                     settingValues[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key] = true
-                    settingValues[BoolDataStoreKeys.SHOULD_RESET_TEXT.key] = true
+                    settingValues[BoolDataStoreKeys.SHOULD_CLEAR_TEXT.key] = true
                 }
             }
         }
