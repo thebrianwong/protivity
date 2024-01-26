@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -88,7 +90,11 @@ fun Home(
                         Divider(modifier = Modifier.padding(bottom = 8.dp))
                         ChatGPTTextWindow(chatGPTViewModel)
                     } else {
-                        Text(text = "Click on the \"+\" to add a timer!")
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(text = "Click on the \"+\" to add a timer!")
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(text = "Swipe right to change settings!")
+                        }
                     }
                 }
             } else {
@@ -109,7 +115,11 @@ fun Home(
                         )
                         ChatGPTTextWindow(chatGPTViewModel)
                     } else {
-                        Text(text = "Click on the \"+\" to add a timer!")
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(text = "Click on the \"+\" to add a timer!")
+                            Spacer(modifier = Modifier.height(16.dp))
+                            Text(text = "Swipe right to change settings!")
+                        }
                     }
                 }
             }
