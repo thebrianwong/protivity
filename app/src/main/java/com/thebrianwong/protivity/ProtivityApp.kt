@@ -54,6 +54,9 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     timerViewModel.setNotificationUtils(notificationUtils)
     timerViewModel.setWindow(window)
 
+    settingsViewModel.setDataStore(dataStore)
+    settingsViewModel.setCoroutine(coroutine)
+
     chatGPTViewModel.setCoroutine(coroutine)
     chatGPTViewModel.setApolloClient(apolloClient)
     timerViewModel.setGenTextCallback { chatGPTViewModel.changeDisplayText(it) }
