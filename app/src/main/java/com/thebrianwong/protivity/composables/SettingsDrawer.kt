@@ -68,7 +68,11 @@ fun SettingsDrawer(viewModel: SettingsViewModel) {
                         modifier = Modifier.weight(1f)
                     )
                     Text(text = setting, modifier = Modifier.weight(1f))
-                    Switch(checked = true, onCheckedChange = {}, modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = viewModel.getSetting(setting),
+                        onCheckedChange = { viewModel.toggleSetting(setting) },
+                        modifier = Modifier.weight(1f)
+                    )
                 }
             }
         }
