@@ -101,9 +101,9 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     }
     val settingsData: List<Boolean?> by rawSettingsData.collectAsState(
         initial = listOf(
-            null,
-            null,
-            null
+            true,
+            true,
+            true
         )
     )
     val alarmSetting = settingsData[0]
@@ -114,7 +114,6 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         vibrateSetting ?: true,
         clearTextSetting ?: true
     )
-
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -148,16 +147,6 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
         if (chatGPTViewModel.initializing.value) {
             chatGPTViewModel.initializeText(10000)
-        }
-
-        if (settingsData.contains(null)) {
-            coroutine.launch {
-                dataStore.edit { settingValues ->
-                    settingValues[BoolDataStoreKeys.SHOULD_VIBRATE.key] = true
-                    settingValues[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key] = true
-                    settingValues[BoolDataStoreKeys.SHOULD_CLEAR_TEXT.key] = true
-                }
-            }
         }
     }
 
