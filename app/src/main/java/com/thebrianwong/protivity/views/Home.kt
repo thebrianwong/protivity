@@ -43,6 +43,7 @@ import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
 import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
+import com.thebrianwong.protivity.viewModels.SettingsViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -51,6 +52,7 @@ fun Home(
     timerViewModel: TimerViewModel,
     modalViewModel: ModalViewModel,
     chatGPTViewModel: ChatGPTViewModel,
+    settingsViewModel: SettingsViewModel,
     dataStore: DataStore<Preferences>
 ) {
     var displayModal by rememberSaveable { mutableStateOf(false) }
@@ -63,7 +65,9 @@ fun Home(
         .padding(32.dp)
     val coroutineScope = rememberCoroutineScope()
 
-    ModalNavigationDrawer(drawerContent = { SettingsDrawer(dataStore = dataStore) }) {
+    ModalNavigationDrawer(drawerContent = { SettingsDrawer(viewModel = settingsViewModel) }) {
+
+
         Scaffold(
             floatingActionButtonPosition = FabPosition.End,
             floatingActionButton = {

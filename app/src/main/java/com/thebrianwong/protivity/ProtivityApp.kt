@@ -158,5 +158,5 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         }
     }
 
-    Home(timerViewModel, modalViewModel, chatGPTViewModel, dataStore)
+    Home(timerViewModel, modalViewModel, chatGPTViewModel, settingsViewModel, dataStore)
 }

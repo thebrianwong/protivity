@@ -20,9 +20,10 @@ import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import com.thebrianwong.protivity.R
+import com.thebrianwong.protivity.viewModels.SettingsViewModel
 
 @Composable
-fun SettingsDrawer(dataStore: DataStore<Preferences>) {
+fun SettingsDrawer(viewModel: SettingsViewModel) {
     val settingsIcons = listOf(
         hashMapOf(
             "setting" to "Alarm",
