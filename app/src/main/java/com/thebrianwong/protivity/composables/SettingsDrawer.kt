@@ -1,6 +1,5 @@
 package com.thebrianwong.protivity.composables
 
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,12 +12,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
 import com.thebrianwong.protivity.R
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
 
@@ -27,15 +23,18 @@ fun SettingsDrawer(viewModel: SettingsViewModel) {
     val settingsIcons = listOf(
         hashMapOf(
             "setting" to "Alarm",
-            "icon" to R.drawable.baseline_alarm_on_24
+            "enabledIcon" to R.drawable.alarm_enabled,
+            "disabledIcon" to R.drawable.alarm_disabled
         ),
         hashMapOf(
             "setting" to "Vibrate",
-            "icon" to R.drawable.baseline_vibration_24
+            "enabledIcon" to R.drawable.vibrate_enabled,
+            "disabledIcon" to R.drawable.vibrated_disabled
         ),
         hashMapOf(
             "setting" to "Clear Text",
-            "icon" to R.drawable.baseline_check_24
+            "enabledIcon" to R.drawable.clear_text_enabled,
+            "disabledIcon" to R.drawable.clear_text_disabled
         ),
     )
 
@@ -55,7 +54,9 @@ fun SettingsDrawer(viewModel: SettingsViewModel) {
             )
             settingsIcons.forEach { data ->
                 val setting = data["setting"] as String
-                val icon = data["icon"] as Int
+                val enabledIcon = data["enabledIcon"] as Int
+                val disabledIcon = data["disabledIcon"] as Int
+                val settingIsEnabled = viewModel.getSetting(setting)
 
                 Row(
                     modifier = Modifier.padding(bottom = 16.dp),
@@ -63,13 +64,13 @@ fun SettingsDrawer(viewModel: SettingsViewModel) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Icon(
-                        painter = painterResource(id = icon),
+                        painter = painterResource(id = if (settingIsEnabled) enabledIcon else disabledIcon),
                         contentDescription = "$setting Setting",
                         modifier = Modifier.weight(1f)
                     )
                     Text(text = setting, modifier = Modifier.weight(1f))
                     Switch(
-                        checked = viewModel.getSetting(setting),
+                        checked = settingIsEnabled,
                         onCheckedChange = { viewModel.toggleSetting(setting) },
                         modifier = Modifier.weight(1f)
                     )
