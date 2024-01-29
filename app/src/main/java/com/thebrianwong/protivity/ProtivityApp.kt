@@ -127,6 +127,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     )
 
     notificationUtils.changeNotificationChannels(alarmSetting ?: true, vibrateSetting ?: true)
+    timerViewModel.setShouldResetText(clearTextSetting ?: true)
 
     val requestPermissionLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
