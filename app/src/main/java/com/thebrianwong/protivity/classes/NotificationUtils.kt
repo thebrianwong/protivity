@@ -17,13 +17,8 @@ import com.thebrianwong.protivity.MainActivity
 import com.thebrianwong.protivity.R
 
 class NotificationUtils(private val context: Context) {
-    private var openAppIntent: PendingIntent? = null
-    private var notification: Notification? = null
-
-    init {
-        createIntent()
-        createNotification()
-    }
+    private var _openAppIntent: PendingIntent? = null
+    private var _notification: Notification? = null
 
     private fun createIntent() {
         val intent = Intent(context, MainActivity::class.java)
@@ -32,17 +27,21 @@ class NotificationUtils(private val context: Context) {
             }
         val pendingIntent: PendingIntent =
             PendingIntent.getActivity(context, 10, intent, PendingIntent.FLAG_MUTABLE)
-        this.openAppIntent = pendingIntent
+        this._openAppIntent = pendingIntent
     }
 
-    private fun createNotification() {
-        val notificationBuilder = NotificationCompat.Builder(context, "protivityChannel")
-            .setSmallIcon(R.drawable.baseline_timer_24)
-            .setContentTitle("Protivity")
-            .setContentText("Time's Up!")
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setAutoCancel(true)
-            .setFullScreenIntent(this.openAppIntent, true)
+    private fun createNotification(
+        alarmEnabled: Boolean,
+        vibrateEnabled: Boolean
+    ) {
+        val notificationBuilder =
+            NotificationCompat.Builder(context, "protivityChannel$alarmEnabled$vibrateEnabled")
+                .setSmallIcon(R.drawable.baseline_timer_24)
+                .setContentTitle("Protivity")
+                .setContentText("Time's Up!")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setFullScreenIntent(this._openAppIntent, true)
 
         val alarmSound: Uri? = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_ALARM)
         val alarmAudioAttributes =
@@ -55,17 +54,17 @@ class NotificationUtils(private val context: Context) {
         )
         val notificationChannel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel(
-                "protivityChannel",
+                "protivityChannel$alarmEnabled$vibrateEnabled",
                 "Protivity Timer",
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "The notification for when the Protivity timer is up."
                 vibrationPattern = vibPattern
                 setSound(
-                    alarmSound,
+                    if (alarmEnabled) alarmSound else null,
                     alarmAudioAttributes
                 )
-                enableVibration(true)
+                enableVibration(vibrateEnabled)
             }
         } else {
             null
@@ -76,13 +75,20 @@ class NotificationUtils(private val context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && notificationChannel != null) {
             notificationManager.createNotificationChannel(notificationChannel)
         }
+        this._notification = notificationBuilder.build()
+    }
 
-        this.notification = notificationBuilder.build()
+    fun changeNotificationChannels(
+        alarmEnabled: Boolean,
+        vibrateEnabled: Boolean
+    ) {
+        createIntent()
+        createNotification(alarmEnabled, vibrateEnabled)
     }
 
     fun dispatchNotification() {
         with(NotificationManagerCompat.from(context)) {
-            notify(10, notification!!)
+            notify(10, _notification!!)
         }
     }
 }

@@ -17,6 +17,9 @@ class SettingsViewModel : ViewModel() {
     private val _coroutine = mutableStateOf<CoroutineScope?>(null)
     private val _dataStore = mutableStateOf<DataStore<Preferences>?>(null)
 
+    private val _changeNotiSettingsCallback =
+        mutableStateOf<((Boolean, Boolean) -> Unit)?>(null)
+
     val alarmEnabled = _alarmEnabled.value
     val vibrateEnabled = _vibrateEnabled.value
     val clearTextEnabled = _clearTextEnabled.value
@@ -27,6 +30,10 @@ class SettingsViewModel : ViewModel() {
 
     fun setDataStore(dataStore: DataStore<Preferences>) {
         _dataStore.value = dataStore
+    }
+
+    fun setChangeNotiSettingsCallback(callback: (Boolean, Boolean) -> Unit) {
+        _changeNotiSettingsCallback.value = callback
     }
 
     fun loadSettings(alarmEnabled: Boolean, vibrateEnabled: Boolean, clearTextEnabled: Boolean) {
@@ -54,6 +61,7 @@ class SettingsViewModel : ViewModel() {
                     }
                 }
             }
+
             "Vibrate" -> {
                 _vibrateEnabled.value = !_vibrateEnabled.value
                 _coroutine.value?.launch {
@@ -62,6 +70,7 @@ class SettingsViewModel : ViewModel() {
                     }
                 }
             }
+
             "Clear Text" -> {
                 _clearTextEnabled.value = !_clearTextEnabled.value
                 _coroutine.value?.launch {
@@ -70,6 +79,12 @@ class SettingsViewModel : ViewModel() {
                     }
                 }
             }
+        }
+        _changeNotiSettingsCallback.value?.let {
+            it(
+                _alarmEnabled.value,
+                _vibrateEnabled.value
+            )
         }
     }
 }
