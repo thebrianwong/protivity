@@ -11,6 +11,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
@@ -38,13 +40,18 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     val timerViewModel: TimerViewModel = viewModel()
     val modalViewModel: ModalViewModel = viewModel()
     val settingsViewModel: SettingsViewModel = viewModel()
-    val permissionUtils = PermissionUtils(context)
-    val notificationUtils = NotificationUtils(context)
+    val permissionUtils by remember { mutableStateOf(PermissionUtils(context)) }
+    val notificationUtils by remember { mutableStateOf(NotificationUtils(context)) }
 
     val chatGPTViewModel: ChatGPTViewModel = viewModel()
-    val apolloClient = ApolloClient.Builder()
-        .serverUrl(stringResource(R.string.GRAPHQL_ENDPOINT))
-        .build()
+    val graphQLEndpoint = stringResource(R.string.GRAPHQL_ENDPOINT)
+    val apolloClient by remember {
+        mutableStateOf(
+            ApolloClient.Builder()
+                .serverUrl(graphQLEndpoint)
+                .build()
+        )
+    }
 
     timerViewModel.setDataStore(dataStore)
     timerViewModel.setCoroutine(coroutine)
