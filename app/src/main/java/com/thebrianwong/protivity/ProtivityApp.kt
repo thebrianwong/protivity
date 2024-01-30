@@ -1,6 +1,8 @@
 package com.thebrianwong.protivity
 
 import android.Manifest
+import android.content.Context
+import android.net.ConnectivityManager
 import android.os.Build
 import android.view.Window
 import android.widget.Toast
@@ -14,6 +16,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
@@ -43,14 +46,20 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     val permissionUtils by remember { mutableStateOf(PermissionUtils(context)) }
     val notificationUtils by remember { mutableStateOf(NotificationUtils(context)) }
 
+    val connectivityManager =
+        context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+    val hasInternetConnection = connectivityManager.activeNetwork
+
     val chatGPTViewModel: ChatGPTViewModel = viewModel()
     val graphQLEndpoint = stringResource(R.string.GRAPHQL_ENDPOINT)
-    val apolloClient by remember {
-        mutableStateOf(
-            ApolloClient.Builder()
-                .serverUrl(graphQLEndpoint)
-                .build()
-        )
+    var apolloClient by remember {
+        mutableStateOf<ApolloClient?>(null)
+    }
+
+    if (apolloClient == null && hasInternetConnection != null) {
+        apolloClient = ApolloClient.Builder()
+            .serverUrl(graphQLEndpoint)
+            .build()
     }
 
     timerViewModel.setDataStore(dataStore)
@@ -69,7 +78,16 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     }
 
     chatGPTViewModel.setCoroutine(coroutine)
-    chatGPTViewModel.setApolloClient(apolloClient)
+    if (apolloClient != null) {
+        chatGPTViewModel.setApolloClient(apolloClient!!)
+    }
+    chatGPTViewModel.setIndicateNetworkErrorCallback {
+        Toast.makeText(
+            context,
+            "There is a network connection issue. Please try again later.",
+            Toast.LENGTH_LONG
+        ).show()
+    }
     timerViewModel.setGenTextCallback { chatGPTViewModel.changeDisplayText(it) }
     timerViewModel.setResetTextCallback { chatGPTViewModel.resetText() }
 
@@ -161,7 +179,16 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
         if (chatGPTViewModel.initializing.value) {
             chatGPTViewModel.initializeText(10000)
+
+            if (hasInternetConnection == null) {
+                Toast.makeText(
+                    context,
+                    "There is a network connection issue. Please try again later.",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
         }
+
     }
 
     Home(timerViewModel, modalViewModel, chatGPTViewModel, settingsViewModel, dataStore)
