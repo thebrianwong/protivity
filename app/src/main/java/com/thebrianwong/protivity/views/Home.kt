@@ -2,18 +2,22 @@ package com.thebrianwong.protivity.views
 
 import android.content.res.Configuration
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Divider
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -22,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -29,10 +34,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
+import com.thebrianwong.protivity.R
 import com.thebrianwong.protivity.classes.BoolDataStoreKeys
 import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.viewModels.TimerViewModel
@@ -80,6 +87,19 @@ fun Home(
                 )
             }
         ) {
+            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
+                Icon(painter = painterResource(id = R.drawable.baseline_settings_24),
+                    contentDescription = "Settings Button",
+                    modifier = Modifier
+                        .padding(16.dp)
+                        .height(32.dp)
+                        .width(32.dp)
+                        .clickable(
+                            interactionSource = remember { MutableInteractionSource() },
+                            indication = null
+                        ) { println("dddd")}
+                )
+            }
             if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
                 Column(
                     modifier = modifier.padding(it),
