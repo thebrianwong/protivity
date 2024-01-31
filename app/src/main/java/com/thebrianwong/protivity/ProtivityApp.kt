@@ -23,16 +23,23 @@ import androidx.core.app.ActivityCompat
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 import com.apollographql.apollo3.ApolloClient
 import com.thebrianwong.protivity.classes.BoolDataStoreKeys
 import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.NotificationUtils
 import com.thebrianwong.protivity.classes.PermissionUtils
+import com.thebrianwong.protivity.classes.Screen
 import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.views.Home
+import com.thebrianwong.protivity.views.Settings
 import kotlinx.coroutines.flow.map
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
@@ -40,6 +47,8 @@ import kotlinx.coroutines.flow.map
 fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
+    val navController: NavController = rememberNavController()
+
     val timerViewModel: TimerViewModel = viewModel()
     val modalViewModel: ModalViewModel = viewModel()
     val settingsViewModel: SettingsViewModel = viewModel()
@@ -191,5 +200,13 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
     }
 
-    Home(timerViewModel, modalViewModel, chatGPTViewModel, settingsViewModel, dataStore)
+    NavHost(navController = navController as NavHostController, startDestination = Screen.HomeScreen.route) {
+        composable(Screen.HomeScreen.route) {
+            Home(timerViewModel, modalViewModel, chatGPTViewModel, settingsViewModel, dataStore)
+        }
+        composable(Screen.SettingsScreen.route) {
+            Settings(settingsViewModel)
+        }
+    }
+
 }
