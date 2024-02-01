@@ -206,7 +206,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
                 { navController.navigate(Screen.SettingsScreen.route) })
         }
         composable(Screen.SettingsScreen.route) {
-            Settings(settingsViewModel, {navController.popBackStack()})
+            Settings(settingsViewModel, {navController.navigateUp()})
         }
     }
 
