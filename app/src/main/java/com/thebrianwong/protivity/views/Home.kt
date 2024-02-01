@@ -60,7 +60,8 @@ fun Home(
     modalViewModel: ModalViewModel,
     chatGPTViewModel: ChatGPTViewModel,
     settingsViewModel: SettingsViewModel,
-    dataStore: DataStore<Preferences>
+    dataStore: DataStore<Preferences>,
+    navigateToSettings: () -> Unit
 ) {
     var displayModal by rememberSaveable { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
@@ -97,7 +98,7 @@ fun Home(
                         .clickable(
                             interactionSource = remember { MutableInteractionSource() },
                             indication = null
-                        ) { println("dddd")}
+                        ) { navigateToSettings() }
                 )
             }
             if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
