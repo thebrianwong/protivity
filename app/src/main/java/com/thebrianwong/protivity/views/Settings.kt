@@ -36,58 +36,10 @@ import com.thebrianwong.protivity.viewModels.SettingsViewModel
 
 @Composable
 fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
-    val settingsIcons = listOf(
-        hashMapOf(
-            "setting" to "Alarm",
-            "enabledIcon" to R.drawable.alarm_enabled,
-            "disabledIcon" to R.drawable.alarm_disabled
-        ),
-        hashMapOf(
-            "setting" to "Vibrate",
-            "enabledIcon" to R.drawable.vibrate_enabled,
-            "disabledIcon" to R.drawable.vibrated_disabled
-        ),
-        hashMapOf(
-            "setting" to "Clear Text",
-            "description" to "Erases AI text when the timer expires.",
-            "enabledIcon" to R.drawable.clear_text_enabled,
-            "disabledIcon" to R.drawable.clear_text_disabled
-        ),
-    )
-
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            Column {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                        contentDescription = "Settings Button",
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .height(32.dp)
-                            .width(32.dp)
-                            .clickable(
-                                interactionSource = remember { MutableInteractionSource() },
-                                indication = null
-                            ) { navigateToHome() }
-                    )
-                    Text(
-                        text = "Settings",
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(start = 16.dp)
-                    )
-
-                }
-                Divider(
-                    color = Color.DarkGray, modifier = Modifier
-                        .fillMaxWidth()
-                        .height(1.dp)
-                )
-            }
+            SettingTopBar(navigateToHome)
         }
     ) {
         Column(
@@ -96,6 +48,25 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                 .background(Color(android.graphics.Color.parseColor("#F5F5F5")))
                 .padding(it)
         ) {
+            val settingsIcons = listOf(
+                hashMapOf(
+                    "setting" to "Alarm",
+                    "enabledIcon" to R.drawable.alarm_enabled,
+                    "disabledIcon" to R.drawable.alarm_disabled
+                ),
+                hashMapOf(
+                    "setting" to "Vibrate",
+                    "enabledIcon" to R.drawable.vibrate_enabled,
+                    "disabledIcon" to R.drawable.vibrated_disabled
+                ),
+                hashMapOf(
+                    "setting" to "Clear Text",
+                    "description" to "Erases AI text when the timer expires.",
+                    "enabledIcon" to R.drawable.clear_text_enabled,
+                    "disabledIcon" to R.drawable.clear_text_disabled
+                ),
+            )
+
             settingsIcons.forEach { data ->
                 val setting = data["setting"] as String
                 val description = data["description"] as String?
@@ -117,27 +88,21 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                         if (description != null) {
                             Column {
                                 Row {
-                                    Icon(
-                                        painter = painterResource(id = if (settingIsEnabled) enabledIcon else disabledIcon),
-                                        contentDescription = "$setting Setting",
-                                        modifier = Modifier
-                                    )
-                                    Text(
-                                        text = setting, modifier = Modifier
-                                            .padding(start = 8.dp)
+                                    SettingIconText(
+                                        setting = setting,
+                                        enabledIcon = enabledIcon,
+                                        disabledIcon = disabledIcon,
+                                        enabled = settingIsEnabled
                                     )
                                 }
                                 Text(text = description, fontSize = 12.sp, lineHeight = 1.em)
                             }
                         } else {
-                            Icon(
-                                painter = painterResource(id = if (settingIsEnabled) enabledIcon else disabledIcon),
-                                contentDescription = "$setting Setting",
-                                modifier = Modifier
-                            )
-                            Text(
-                                text = setting, modifier = Modifier
-                                    .padding(start = 8.dp)
+                            SettingIconText(
+                                setting = setting,
+                                enabledIcon = enabledIcon,
+                                disabledIcon = disabledIcon,
+                                enabled = settingIsEnabled
                             )
                         }
                     }
@@ -148,20 +113,74 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Divider(
-                            color = Color.DarkGray, modifier = Modifier
-                                .fillMaxHeight(0.6f)
-                                .width(1.dp)
-                        )
-                        Switch(
-                            checked = settingIsEnabled,
-                            onCheckedChange = { viewModel.toggleSetting(setting) },
-                            modifier = Modifier
-                                .padding(start = 32.dp)
-                        )
+                        SettingSwitch(
+                            setting = setting,
+                            enabled = settingIsEnabled,
+                            handleOnToggle = { viewModel.toggleSetting(setting) })
                     }
                 }
             }
         }
     }
+}
+
+@Composable
+fun SettingTopBar(handleOnClick: () -> Unit) {
+    Column {
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+                contentDescription = "Settings Button",
+                modifier = Modifier
+                    .padding(16.dp)
+                    .height(32.dp)
+                    .width(32.dp)
+                    .clickable(
+                        interactionSource = remember { MutableInteractionSource() },
+                        indication = null
+                    ) { handleOnClick() }
+            )
+            Text(
+                text = "Settings",
+                fontSize = 32.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 16.dp)
+            )
+
+        }
+        Divider(
+            color = Color.DarkGray, modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+        )
+    }
+}
+
+@Composable
+fun SettingIconText(setting: String, enabledIcon: Int, disabledIcon: Int, enabled: Boolean) {
+    Icon(
+        painter = painterResource(id = if (enabled) enabledIcon else disabledIcon),
+        contentDescription = "$setting Setting",
+    )
+    Text(
+        text = setting,
+        modifier = Modifier.padding(start = 8.dp)
+    )
+}
+
+@Composable
+fun SettingSwitch(setting: String, enabled: Boolean, handleOnToggle: (String) -> Unit) {
+    Divider(
+        color = Color.DarkGray, modifier = Modifier
+            .fillMaxHeight(0.6f)
+            .width(1.dp)
+    )
+    Switch(
+        checked = enabled,
+        onCheckedChange = { handleOnToggle(setting) },
+        modifier = Modifier
+            .padding(start = 32.dp)
+    )
 }
