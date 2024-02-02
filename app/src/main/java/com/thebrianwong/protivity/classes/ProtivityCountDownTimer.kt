@@ -13,8 +13,6 @@ class ProtivityCountDownTimer(
     }
 
     override fun onFinish() {
-//            figure out how to send phone alerts
         handleOnFinish()
     }
-
 }
