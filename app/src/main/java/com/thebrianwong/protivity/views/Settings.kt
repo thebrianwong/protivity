@@ -1,5 +1,6 @@
 package com.thebrianwong.protivity.views
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -157,10 +158,19 @@ fun SettingTopBar(handleOnClick: () -> Unit) {
 
 @Composable
 fun SettingIconText(setting: String, enabledIcon: Int, disabledIcon: Int, enabled: Boolean) {
-    Icon(
-        painter = painterResource(id = if (enabled) enabledIcon else disabledIcon),
-        contentDescription = "$setting Setting",
-    )
+    Crossfade(targetState = enabled, label = "$setting Icon Change Animation") { enabled ->
+        if (enabled) {
+            Icon(
+                painter = painterResource(id = enabledIcon),
+                contentDescription = "$setting Setting",
+            )
+        } else {
+            Icon(
+                painter = painterResource(id = disabledIcon),
+                contentDescription = "$setting Setting",
+            )
+        }
+    }
     Text(
         text = setting,
         modifier = Modifier.padding(start = 8.dp)
