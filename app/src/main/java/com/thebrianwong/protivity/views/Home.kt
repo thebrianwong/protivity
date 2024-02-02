@@ -19,7 +19,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.FabPosition
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,12 +44,10 @@ import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.FloatingActionButton
-import com.thebrianwong.protivity.composables.SettingsDrawer
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
 import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
-import com.thebrianwong.protivity.viewModels.SettingsViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
@@ -59,7 +56,6 @@ fun Home(
     timerViewModel: TimerViewModel,
     modalViewModel: ModalViewModel,
     chatGPTViewModel: ChatGPTViewModel,
-    settingsViewModel: SettingsViewModel,
     dataStore: DataStore<Preferences>,
     navigateToSettings: () -> Unit
 ) {
@@ -72,9 +68,6 @@ fun Home(
         .background(MaterialTheme.colorScheme.secondaryContainer)
         .padding(32.dp)
     val coroutineScope = rememberCoroutineScope()
-
-    ModalNavigationDrawer(drawerContent = { SettingsDrawer(viewModel = settingsViewModel) }) {
-
 
         Scaffold(
             floatingActionButtonPosition = FabPosition.End,
@@ -168,4 +161,3 @@ fun Home(
             }
         }
     }
-}
