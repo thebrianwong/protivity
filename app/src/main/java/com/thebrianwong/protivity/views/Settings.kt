@@ -29,6 +29,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.thebrianwong.protivity.R
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
@@ -48,6 +49,7 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
         ),
         hashMapOf(
             "setting" to "Clear Text",
+            "description" to "Erases AI text when the timer expires.",
             "enabledIcon" to R.drawable.clear_text_enabled,
             "disabledIcon" to R.drawable.clear_text_disabled
         ),
@@ -96,13 +98,15 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
         ) {
             settingsIcons.forEach { data ->
                 val setting = data["setting"] as String
+                val description = data["description"] as String?
                 val enabledIcon = data["enabledIcon"] as Int
                 val disabledIcon = data["disabledIcon"] as Int
                 val settingIsEnabled = viewModel.getSetting(setting)
 
                 Row(
                     modifier = Modifier
-                        .padding(bottom = 16.dp, start = 32.dp, end = 32.dp),
+                        .clickable(onClick = {})
+                        .padding(vertical = 12.dp, horizontal = 32.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -110,16 +114,32 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                         modifier = Modifier
                             .weight(1f)
                     ) {
-
-                        Icon(
-                            painter = painterResource(id = if (settingIsEnabled) enabledIcon else disabledIcon),
-                            contentDescription = "$setting Setting",
-                            modifier = Modifier
-                        )
-                        Text(
-                            text = setting, modifier = Modifier
-                                .padding(start = 8.dp)
-                        )
+                        if (description != null) {
+                            Column {
+                                Row {
+                                    Icon(
+                                        painter = painterResource(id = if (settingIsEnabled) enabledIcon else disabledIcon),
+                                        contentDescription = "$setting Setting",
+                                        modifier = Modifier
+                                    )
+                                    Text(
+                                        text = setting, modifier = Modifier
+                                            .padding(start = 8.dp)
+                                    )
+                                }
+                                Text(text = description, fontSize = 12.sp, lineHeight = 1.em)
+                            }
+                        } else {
+                            Icon(
+                                painter = painterResource(id = if (settingIsEnabled) enabledIcon else disabledIcon),
+                                contentDescription = "$setting Setting",
+                                modifier = Modifier
+                            )
+                            Text(
+                                text = setting, modifier = Modifier
+                                    .padding(start = 8.dp)
+                            )
+                        }
                     }
                     Row(
                         modifier = Modifier
