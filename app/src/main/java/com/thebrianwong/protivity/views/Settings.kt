@@ -91,9 +91,8 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.LightGray)
+                .background(Color(android.graphics.Color.parseColor("#F5F5F5")))
                 .padding(it)
-                .padding(top = 32.dp)
         ) {
             settingsIcons.forEach { data ->
                 val setting = data["setting"] as String
