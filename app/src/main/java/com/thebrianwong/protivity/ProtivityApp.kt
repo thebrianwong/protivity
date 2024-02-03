@@ -34,7 +34,7 @@ import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.NotificationUtils
 import com.thebrianwong.protivity.classes.PermissionUtils
 import com.thebrianwong.protivity.classes.Screen
-import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
+import com.thebrianwong.protivity.viewModels.AITextViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
 import com.thebrianwong.protivity.viewModels.TimerViewModel
@@ -59,7 +59,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val hasInternetConnection = connectivityManager.activeNetwork
 
-    val chatGPTViewModel: ChatGPTViewModel = viewModel()
+    val AITextViewModel: AITextViewModel = viewModel()
     val graphQLEndpoint = stringResource(R.string.GRAPHQL_ENDPOINT)
     var apolloClient by remember {
         mutableStateOf<ApolloClient?>(null)
@@ -86,19 +86,19 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         )
     }
 
-    chatGPTViewModel.setCoroutine(coroutine)
+    AITextViewModel.setCoroutine(coroutine)
     if (apolloClient != null) {
-        chatGPTViewModel.setApolloClient(apolloClient!!)
+        AITextViewModel.setApolloClient(apolloClient!!)
     }
-    chatGPTViewModel.setIndicateNetworkErrorCallback {
+    AITextViewModel.setIndicateNetworkErrorCallback {
         Toast.makeText(
             context,
             "There is a network connection issue. Please try again later.",
             Toast.LENGTH_LONG
         ).show()
     }
-    timerViewModel.setGenTextCallback { chatGPTViewModel.changeDisplayText(it) }
-    timerViewModel.setResetTextCallback { chatGPTViewModel.resetText() }
+    timerViewModel.setGenTextCallback { AITextViewModel.changeDisplayText(it) }
+    timerViewModel.setResetTextCallback { AITextViewModel.resetText() }
 
     if (timerViewModel.timer.value == null) {
         val savedTimerValues = dataStore.data.map { preferences ->
@@ -186,8 +186,8 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     LaunchedEffect(context) {
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 
-        if (chatGPTViewModel.initializing.value) {
-            chatGPTViewModel.initializeText(10000)
+        if (AITextViewModel.initializing.value) {
+            AITextViewModel.initializeText(10000)
 
             if (hasInternetConnection == null) {
                 Toast.makeText(
@@ -205,7 +205,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         startDestination = Screen.HomeScreen.route
     ) {
         composable(Screen.HomeScreen.route) {
-            Home(timerViewModel, modalViewModel, chatGPTViewModel, dataStore,
+            Home(timerViewModel, modalViewModel, AITextViewModel, dataStore,
                 { navController.navigate(Screen.SettingsScreen.route) })
         }
         composable(Screen.SettingsScreen.route) {

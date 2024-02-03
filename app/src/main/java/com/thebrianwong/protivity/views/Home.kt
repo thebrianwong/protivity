@@ -35,12 +35,12 @@ import androidx.datastore.preferences.core.edit
 import com.thebrianwong.protivity.classes.BoolDataStoreKeys
 import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.viewModels.TimerViewModel
-import com.thebrianwong.protivity.composables.ChatGPTTextWindow
+import com.thebrianwong.protivity.composables.AITextWindow
 import com.thebrianwong.protivity.composables.home.FloatingActionButton
 import com.thebrianwong.protivity.composables.modal.TimeModal
 import com.thebrianwong.protivity.composables.timer.Timer
 import com.thebrianwong.protivity.composables.home.HomeTopBar
-import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
+import com.thebrianwong.protivity.viewModels.AITextViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 fun Home(
     timerViewModel: TimerViewModel,
     modalViewModel: ModalViewModel,
-    chatGPTViewModel: ChatGPTViewModel,
+    AITextViewModel: AITextViewModel,
     dataStore: DataStore<Preferences>,
     navigateToSettings: () -> Unit
 ) {
@@ -92,7 +92,7 @@ fun Home(
                 if (timerViewModel.timer.value != null) {
                     Timer(timer = timerViewModel)
                     Divider(modifier = Modifier.padding(bottom = 8.dp))
-                    ChatGPTTextWindow(chatGPTViewModel)
+                    AITextWindow(AITextViewModel)
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Click on the \"+\" to add a timer!")
@@ -115,7 +115,7 @@ fun Home(
                             .fillMaxHeight()
                             .width(1.dp)
                     )
-                    ChatGPTTextWindow(chatGPTViewModel)
+                    AITextWindow(AITextViewModel)
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Click on the \"+\" to add a timer!")

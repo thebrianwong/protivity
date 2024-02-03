@@ -7,7 +7,7 @@ import com.example.Query
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-class ChatGPTViewModel : ViewModel() {
+class AITextViewModel : ViewModel() {
     private val _initializing = mutableStateOf(true)
     private val _displayedNetworkErrorMessage = mutableStateOf(false)
     private val _currentText = mutableStateOf("")
