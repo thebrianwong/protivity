@@ -1,4 +1,4 @@
-package com.thebrianwong.protivity.composables
+package com.thebrianwong.protivity.composables.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
