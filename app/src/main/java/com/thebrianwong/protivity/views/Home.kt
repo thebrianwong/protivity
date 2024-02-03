@@ -96,8 +96,6 @@ fun Home(
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Click on the \"+\" to add a timer!")
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Swipe right to change settings!")
                     }
                 }
             }
@@ -121,8 +119,6 @@ fun Home(
                 } else {
                     Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(text = "Click on the \"+\" to add a timer!")
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(text = "Swipe right to change settings!")
                     }
                 }
             }
