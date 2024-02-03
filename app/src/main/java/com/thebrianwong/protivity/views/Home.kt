@@ -46,6 +46,7 @@ import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.home.FloatingActionButton
 import com.thebrianwong.protivity.composables.TimeModal
 import com.thebrianwong.protivity.composables.Timer
+import com.thebrianwong.protivity.composables.home.HomeTopBar
 import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
 import kotlinx.coroutines.flow.map
@@ -75,19 +76,7 @@ fun Home(
             )
         },
         topBar = {
-            Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
-                Icon(painter = painterResource(id = R.drawable.baseline_settings_24),
-                    contentDescription = "Settings Button",
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .height(32.dp)
-                        .width(32.dp)
-                        .clickable(
-                            interactionSource = remember { MutableInteractionSource() },
-                            indication = null
-                        ) { navigateToSettings() }
-                )
-            }
+            HomeTopBar(navigateToSettings = { navigateToSettings() })
         }
     ) {
         val modifier = Modifier
