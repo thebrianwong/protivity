@@ -1,4 +1,4 @@
-package com.thebrianwong.protivity.composables
+package com.thebrianwong.protivity.composables.modal
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.width

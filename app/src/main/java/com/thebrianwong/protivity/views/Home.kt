@@ -44,8 +44,8 @@ import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.viewModels.TimerViewModel
 import com.thebrianwong.protivity.composables.ChatGPTTextWindow
 import com.thebrianwong.protivity.composables.home.FloatingActionButton
-import com.thebrianwong.protivity.composables.TimeModal
-import com.thebrianwong.protivity.composables.Timer
+import com.thebrianwong.protivity.composables.modal.TimeModal
+import com.thebrianwong.protivity.composables.timer.Timer
 import com.thebrianwong.protivity.composables.home.HomeTopBar
 import com.thebrianwong.protivity.viewModels.ChatGPTViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel

@@ -1,4 +1,4 @@
-package com.thebrianwong.protivity.composables
+package com.thebrianwong.protivity.composables.timer
 
 import android.content.res.Configuration
 import androidx.compose.foundation.layout.Arrangement
