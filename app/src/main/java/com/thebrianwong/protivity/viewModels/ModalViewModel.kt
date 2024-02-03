@@ -17,15 +17,15 @@ class ModalViewModel : ViewModel() {
     private fun resetInputValues() {
         _hours.value = _hours.value.copy(
             text = "",
-            selection = TextRange(0,0)
+            selection = TextRange(0, 0)
         )
         _minutes.value = _minutes.value.copy(
             text = "",
-            selection = TextRange(0,0)
+            selection = TextRange(0, 0)
         )
         _seconds.value = _seconds.value.copy(
             text = "",
-            selection = TextRange(0,0)
+            selection = TextRange(0, 0)
         )
     }
 
@@ -40,32 +40,36 @@ class ModalViewModel : ViewModel() {
                 "hours" ->
                     _hours.value = _hours.value.copy(
                         text = newValue,
-                        selection = TextRange(endIndex,endIndex)
+                        selection = TextRange(endIndex, endIndex)
                     )
+
                 "minutes" ->
                     _minutes.value = _minutes.value.copy(
                         text = newValue,
-                        selection = TextRange(endIndex,endIndex)
+                        selection = TextRange(endIndex, endIndex)
                     )
+
                 "seconds" ->
                     _seconds.value = _seconds.value.copy(
                         text = newValue,
-                        selection = TextRange(endIndex,endIndex)
+                        selection = TextRange(endIndex, endIndex)
                     )
             }
         }
     }
 
-    fun highlightInputValue(valueType:String) {
+    fun highlightInputValue(valueType: String) {
         when (valueType) {
             "hours" ->
                 _hours.value = _hours.value.copy(
                     selection = TextRange(0, _hours.value.text.length)
                 )
+
             "minutes" ->
                 _minutes.value = _minutes.value.copy(
                     selection = TextRange(0, _minutes.value.text.length)
                 )
+
             "seconds" ->
                 _seconds.value = _seconds.value.copy(
                     selection = TextRange(0, _seconds.value.text.length)

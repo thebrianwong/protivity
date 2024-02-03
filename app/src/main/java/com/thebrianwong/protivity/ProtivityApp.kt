@@ -200,13 +200,16 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
 
     }
 
-    NavHost(navController = navController as NavHostController, startDestination = Screen.HomeScreen.route) {
+    NavHost(
+        navController = navController as NavHostController,
+        startDestination = Screen.HomeScreen.route
+    ) {
         composable(Screen.HomeScreen.route) {
             Home(timerViewModel, modalViewModel, chatGPTViewModel, dataStore,
                 { navController.navigate(Screen.SettingsScreen.route) })
         }
         composable(Screen.SettingsScreen.route) {
-            Settings(settingsViewModel, {navController.navigateUp()})
+            Settings(settingsViewModel, { navController.navigateUp() })
         }
     }
 

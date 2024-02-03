@@ -73,9 +73,16 @@ fun TimeModal(
                         modifier = Modifier.weight(1f),
                         finalInput = false,
                         hasFocus = currentlyFocused == "HH",
-                        handleValueChange = {value, index -> modalViewModel.handleUserInput(value,index, "hours", 99) },
+                        handleValueChange = { value, index ->
+                            modalViewModel.handleUserInput(
+                                value,
+                                index,
+                                "hours",
+                                99
+                            )
+                        },
                         handleFocusChange = { currentlyFocused = it },
-                        highlightInputValue = { modalViewModel.highlightInputValue("hours")}
+                        highlightInputValue = { modalViewModel.highlightInputValue("hours") }
                     )
                     TimeModalInput(
                         value = modalViewModel.minutes.value,
@@ -83,9 +90,16 @@ fun TimeModal(
                         modifier = Modifier.weight(1f),
                         finalInput = false,
                         hasFocus = currentlyFocused == "MM",
-                        handleValueChange = {value, index ->  modalViewModel.handleUserInput(value,index, "minutes", 59) },
+                        handleValueChange = { value, index ->
+                            modalViewModel.handleUserInput(
+                                value,
+                                index,
+                                "minutes",
+                                59
+                            )
+                        },
                         handleFocusChange = { currentlyFocused = it },
-                        highlightInputValue = { modalViewModel.highlightInputValue("minutes")}
+                        highlightInputValue = { modalViewModel.highlightInputValue("minutes") }
                     )
                     TimeModalInput(
                         value = modalViewModel.seconds.value,
@@ -93,9 +107,16 @@ fun TimeModal(
                         modifier = Modifier.weight(1f),
                         finalInput = true,
                         hasFocus = currentlyFocused == "SS",
-                        handleValueChange = {value, index ->  modalViewModel.handleUserInput(value,index, "seconds", 59) },
+                        handleValueChange = { value, index ->
+                            modalViewModel.handleUserInput(
+                                value,
+                                index,
+                                "seconds",
+                                59
+                            )
+                        },
                         handleFocusChange = { currentlyFocused = it },
-                        highlightInputValue = { modalViewModel.highlightInputValue("seconds")}
+                        highlightInputValue = { modalViewModel.highlightInputValue("seconds") }
                     )
                 }
             }
