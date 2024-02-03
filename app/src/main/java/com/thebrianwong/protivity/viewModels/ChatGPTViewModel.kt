@@ -18,7 +18,6 @@ class ChatGPTViewModel : ViewModel() {
 
     val initializing = _initializing
     val currentText = _currentText
-    val nextText = _nextText
 
     fun setCoroutine(coroutine: CoroutineScope) {
         _coroutine.value = coroutine
