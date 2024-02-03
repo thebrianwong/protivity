@@ -30,6 +30,9 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.thebrianwong.protivity.R
+import com.thebrianwong.protivity.composables.settings.SettingsIconText
+import com.thebrianwong.protivity.composables.settings.SettingsSwitch
+import com.thebrianwong.protivity.composables.settings.SettingsTopBar
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
 
 @Composable
@@ -37,7 +40,7 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
     Scaffold(
         modifier = Modifier.fillMaxSize(),
         topBar = {
-            SettingTopBar(navigateToHome)
+            SettingsTopBar(navigateToHome)
         }
     ) {
         Column(
@@ -86,7 +89,7 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                         if (description != null) {
                             Column {
                                 Row {
-                                    SettingIconText(
+                                    SettingsIconText(
                                         setting = setting,
                                         enabledIcon = enabledIcon,
                                         disabledIcon = disabledIcon,
@@ -96,7 +99,7 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                                 Text(text = description, fontSize = 12.sp, lineHeight = 1.em)
                             }
                         } else {
-                            SettingIconText(
+                            SettingsIconText(
                                 setting = setting,
                                 enabledIcon = enabledIcon,
                                 disabledIcon = disabledIcon,
@@ -111,7 +114,7 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                         horizontalArrangement = Arrangement.End,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        SettingSwitch(
+                        SettingsSwitch(
                             setting = setting,
                             enabled = settingIsEnabled,
                             handleOnToggle = { viewModel.toggleSetting(setting) })
@@ -120,74 +123,4 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
             }
         }
     }
-}
-
-@Composable
-fun SettingTopBar(handleOnClick: () -> Unit) {
-    Column {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                contentDescription = "Settings Button",
-                modifier = Modifier
-                    .padding(16.dp)
-                    .height(32.dp)
-                    .width(32.dp)
-                    .clickable(
-                        interactionSource = remember { MutableInteractionSource() },
-                        indication = null
-                    ) { handleOnClick() }
-            )
-            Text(
-                text = "Settings",
-                fontSize = 32.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-
-        }
-        Divider(
-            color = Color.DarkGray, modifier = Modifier
-                .fillMaxWidth()
-                .height(1.dp)
-        )
-    }
-}
-
-@Composable
-fun SettingIconText(setting: String, enabledIcon: Int, disabledIcon: Int, enabled: Boolean) {
-    Crossfade(targetState = enabled, label = "$setting Icon Change Animation") { enabled ->
-        if (enabled) {
-            Icon(
-                painter = painterResource(id = enabledIcon),
-                contentDescription = "$setting Setting",
-            )
-        } else {
-            Icon(
-                painter = painterResource(id = disabledIcon),
-                contentDescription = "$setting Setting",
-            )
-        }
-    }
-    Text(
-        text = setting,
-        modifier = Modifier.padding(start = 8.dp)
-    )
-}
-
-@Composable
-fun SettingSwitch(setting: String, enabled: Boolean, handleOnToggle: (String) -> Unit) {
-    Divider(
-        color = Color.DarkGray, modifier = Modifier
-            .fillMaxHeight(0.6f)
-            .width(1.dp)
-    )
-    Switch(
-        checked = enabled,
-        onCheckedChange = { handleOnToggle(setting) },
-        modifier = Modifier
-            .padding(start = 32.dp)
-    )
 }
