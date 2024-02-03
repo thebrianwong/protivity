@@ -61,26 +61,20 @@ fun Home(
 ) {
     var displayModal by rememberSaveable { mutableStateOf(false) }
     val configuration = LocalConfiguration.current
-    val modifier = Modifier
-        .fillMaxSize()
-        .padding(vertical = 64.dp, horizontal = 48.dp)
-        .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
-        .background(MaterialTheme.colorScheme.secondaryContainer)
-        .padding(32.dp)
     val coroutineScope = rememberCoroutineScope()
 
-        Scaffold(
-            floatingActionButtonPosition = FabPosition.End,
-            floatingActionButton = {
-                FloatingActionButton(
-                    newTimer = timerViewModel.timer.value == null,
-                    handleClick = {
-                        displayModal = true
-                        modalViewModel.handleOpenModal()
-                    }
-                )
-            }
-        ) {
+    Scaffold(
+        floatingActionButtonPosition = FabPosition.End,
+        floatingActionButton = {
+            FloatingActionButton(
+                newTimer = timerViewModel.timer.value == null,
+                handleClick = {
+                    displayModal = true
+                    modalViewModel.handleOpenModal()
+                }
+            )
+        },
+        topBar = {
             Row(horizontalArrangement = Arrangement.Start, modifier = Modifier.fillMaxWidth()) {
                 Icon(painter = painterResource(id = R.drawable.baseline_settings_24),
                     contentDescription = "Settings Button",
@@ -94,70 +88,80 @@ fun Home(
                         ) { navigateToSettings() }
                 )
             }
-            if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
-                Column(
-                    modifier = modifier.padding(it),
-                    verticalArrangement = (if (timerViewModel.timer.value != null) Arrangement.spacedBy(
-                        16.dp,
-                        Alignment.Top
-                    ) else Arrangement.Center),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    if (timerViewModel.timer.value != null) {
-                        Timer(timer = timerViewModel)
-                        Divider(modifier = Modifier.padding(bottom = 8.dp))
-                        ChatGPTTextWindow(chatGPTViewModel)
-                    } else {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Click on the \"+\" to add a timer!")
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(text = "Swipe right to change settings!")
-                        }
-                    }
-                }
-            } else {
-                Row(
-                    modifier = modifier.padding(it),
-                    horizontalArrangement = Arrangement.spacedBy(
-                        16.dp,
-                        Alignment.CenterHorizontally
-                    ),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (timerViewModel.timer.value != null) {
-                        Timer(timer = timerViewModel)
-                        Divider(
-                            modifier = Modifier
-                                .fillMaxHeight()
-                                .width(1.dp)
-                        )
-                        ChatGPTTextWindow(chatGPTViewModel)
-                    } else {
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            Text(text = "Click on the \"+\" to add a timer!")
-                            Spacer(modifier = Modifier.height(16.dp))
-                            Text(text = "Swipe right to change settings!")
-                        }
+        }
+    ) {
+        val modifier = Modifier
+            .fillMaxSize()
+            .padding(it)
+            .padding(bottom = 64.dp, start = 48.dp, end = 48.dp)
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(20.dp))
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(32.dp)
+
+        if (configuration.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            Column(
+                modifier = modifier,
+                verticalArrangement = (if (timerViewModel.timer.value != null) Arrangement.spacedBy(
+                    16.dp,
+                    Alignment.Top
+                ) else Arrangement.Center),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                if (timerViewModel.timer.value != null) {
+                    Timer(timer = timerViewModel)
+                    Divider(modifier = Modifier.padding(bottom = 8.dp))
+                    ChatGPTTextWindow(chatGPTViewModel)
+                } else {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "Click on the \"+\" to add a timer!")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(text = "Swipe right to change settings!")
                     }
                 }
             }
-            if (displayModal) {
-                TimeModal(
-                    modalViewModel = modalViewModel,
-                    newTimer = timerViewModel.timer.value == null,
-                    handleConfirm = {
-                        timerViewModel.disposeTimer()
-                        timerViewModel.createTimer(it)
-                        coroutineScope.launch {
-                            dataStore.edit { timerValues ->
-                                timerValues[LongDataStoreKeys.STARTING_TIME.key] = it
-                                timerValues[LongDataStoreKeys.REMAINING_TIME.key] = it
-                                timerValues[LongDataStoreKeys.MAX_TIME.key] = it
-                            }
-                        }
-                    },
-                    handleDismiss = { displayModal = false }
-                )
+        } else {
+            Row(
+                modifier = modifier,
+                horizontalArrangement = Arrangement.spacedBy(
+                    16.dp,
+                    Alignment.CenterHorizontally
+                ),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                if (timerViewModel.timer.value != null) {
+                    Timer(timer = timerViewModel)
+                    Divider(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .width(1.dp)
+                    )
+                    ChatGPTTextWindow(chatGPTViewModel)
+                } else {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text(text = "Click on the \"+\" to add a timer!")
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Text(text = "Swipe right to change settings!")
+                    }
+                }
             }
         }
+        if (displayModal) {
+            TimeModal(
+                modalViewModel = modalViewModel,
+                newTimer = timerViewModel.timer.value == null,
+                handleConfirm = {
+                    timerViewModel.disposeTimer()
+                    timerViewModel.createTimer(it)
+                    coroutineScope.launch {
+                        dataStore.edit { timerValues ->
+                            timerValues[LongDataStoreKeys.STARTING_TIME.key] = it
+                            timerValues[LongDataStoreKeys.REMAINING_TIME.key] = it
+                            timerValues[LongDataStoreKeys.MAX_TIME.key] = it
+                        }
+                    }
+                },
+                handleDismiss = { displayModal = false }
+            )
+        }
     }
+}
