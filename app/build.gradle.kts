@@ -32,7 +32,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            resValue("string", "GRAPHQL_ENDPOINT", "PLACEHOLDER")
+            resValue("string", "GRAPHQL_ENDPOINT", "http://protivity-1695151101.us-west-1.elb.amazonaws.com/graphql")
         }
     }
     compileOptions {
