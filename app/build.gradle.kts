@@ -66,6 +66,10 @@ android {
 
 dependencies {
 
+    // to make HTTP calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
     implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
