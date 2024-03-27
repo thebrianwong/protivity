@@ -1,3 +1,5 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -24,7 +26,10 @@ android {
 
     buildTypes {
         debug {
-            resValue("string", "GRAPHQL_ENDPOINT", "http://10.0.2.2:4000/graphql")
+            val p = Properties()
+            p.load(project.rootProject.file("local.properties").reader())
+            val lambdaValue: String = p.getProperty("LAMBDA_ENDPOINT")
+            resValue("string", "LAMBDA_FUNCTION_URL", lambdaValue)
         }
         release {
             isMinifyEnabled = false
@@ -32,7 +37,10 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            resValue("string", "GRAPHQL_ENDPOINT", "http://protivity-1695151101.us-west-1.elb.amazonaws.com/graphql")
+            val p = Properties()
+            p.load(project.rootProject.file("local.properties").reader())
+            val lambdaValue: String = p.getProperty("LAMBDA_ENDPOINT")
+            resValue("string", "LAMBDA_FUNCTION_URL", lambdaValue)
         }
     }
     compileOptions {
@@ -44,6 +52,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"

@@ -60,7 +60,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     val hasInternetConnection = connectivityManager.activeNetwork
 
     val AITextViewModel: AITextViewModel = viewModel()
-    val graphQLEndpoint = stringResource(R.string.GRAPHQL_ENDPOINT)
+    val graphQLEndpoint = stringResource(R.string.LAMBDA_FUNCTION_URL)
     var apolloClient by remember {
         mutableStateOf<ApolloClient?>(null)
     }
