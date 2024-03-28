@@ -29,7 +29,9 @@ android {
             val p = Properties()
             p.load(project.rootProject.file("local.properties").reader())
             val lambdaValue: String = p.getProperty("LAMBDA_ENDPOINT")
+            val apiKey: String = p.getProperty("API_KEY")
             resValue("string", "LAMBDA_FUNCTION_URL", lambdaValue)
+            resValue("string", "API_KEY", apiKey)
         }
         release {
             isMinifyEnabled = false
@@ -40,7 +42,9 @@ android {
             val p = Properties()
             p.load(project.rootProject.file("local.properties").reader())
             val lambdaValue: String = p.getProperty("LAMBDA_ENDPOINT")
+            val apiKey: String = p.getProperty("API_KEY")
             resValue("string", "LAMBDA_FUNCTION_URL", lambdaValue)
+            resValue("string", "API_KEY", apiKey)
         }
     }
     compileOptions {
