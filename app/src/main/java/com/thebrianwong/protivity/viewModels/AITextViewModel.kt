@@ -4,6 +4,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import com.apollographql.apollo3.ApolloClient
 import com.example.Query
+import com.thebrianwong.protivity.lambda.BodyDuration
+import com.thebrianwong.protivity.lambda.LambdaService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -15,6 +17,7 @@ class AITextViewModel : ViewModel() {
     private val _coroutine = mutableStateOf<CoroutineScope?>(null)
     private val _apolloClient = mutableStateOf<ApolloClient?>(null)
     private val _indicateNetworkErrorCallback = mutableStateOf<(() -> Unit)?>(null)
+    private val _lambdaService = mutableStateOf<LambdaService?>(null)
 
     val initializing = _initializing
     val currentText = _currentText
@@ -29,6 +32,10 @@ class AITextViewModel : ViewModel() {
 
     fun setIndicateNetworkErrorCallback(callback: () -> Unit) {
         _indicateNetworkErrorCallback.value = callback
+    }
+
+    fun setLambdaService(lambdaService: LambdaService) {
+        _lambdaService.value = lambdaService
     }
 
     private fun generateText(timeDuration: Long, prioritizeCurrent: Boolean = false) {

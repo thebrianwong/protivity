@@ -34,6 +34,7 @@ import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.NotificationUtils
 import com.thebrianwong.protivity.classes.PermissionUtils
 import com.thebrianwong.protivity.classes.Screen
+import com.thebrianwong.protivity.lambda.LambdaService
 import com.thebrianwong.protivity.viewModels.AITextViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
@@ -85,7 +86,11 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
             vibrateEnabled
         )
     }
+    val lambdaFunctionUrl = stringResource(R.string.LAMBDA_FUNCTION_URL)
+    val apiKey = stringResource(R.string.API_KEY)
+    val lambdaService = LambdaService(lambdaFunctionUrl, apiKey)
 
+    AITextViewModel.setLambdaService(lambdaService)
     AITextViewModel.setCoroutine(coroutine)
     if (apolloClient != null) {
         AITextViewModel.setApolloClient(apolloClient!!)
