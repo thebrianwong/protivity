@@ -4,7 +4,6 @@ plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
 }
-val GRAPHQL_ENDPOINT by extra("http://10.0.2.2:4000/graphql")
 
 android {
     namespace = "com.thebrianwong.protivity"
