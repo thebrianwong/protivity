@@ -40,6 +40,41 @@ class AITextViewModel : ViewModel() {
 
     private fun generateText(timeDuration: Long, prioritizeCurrent: Boolean = false) {
         _coroutine.value?.launch {
+            if (_lambdaService.value != null) {
+                try {
+                    val body = BodyDuration(timeDuration / 1000)
+                    val res = _lambdaService.value?.generateContent(body)
+                    val generatedText = res?.body?.content
+                    if (prioritizeCurrent && _currentText.value != "Break's Over!") {
+                        _currentText.value = generatedText
+                            ?: "Uh oh! It seems that I've run out of fun facts at the moment. Try again later!"
+                    } else {
+
+                        _nextText.value = generatedText
+                            ?: "Uh oh! It seems that I've run out of fun facts at the moment. Try again later!"
+                    }
+                    _initializing.value = false
+                    // this is reset so that if the server crashes again,
+                    // the error message can be displayed again
+                    _displayedNetworkErrorMessage.value = false
+                } catch (e: Exception) {
+                    println(e)
+                    if (!_displayedNetworkErrorMessage.value) {
+                        _indicateNetworkErrorCallback.value?.let { it() }
+                        _displayedNetworkErrorMessage.value = true
+                        // will result in currentText being an empty string,
+                        // providing a clearer indicator that there is an issue
+                        // since the loading circle will be rendered
+                        _nextText.value = ""
+                    }
+                }
+            }
+
+        }
+    }
+
+    private fun generateTextOld(timeDuration: Long, prioritizeCurrent: Boolean = false) {
+        _coroutine.value?.launch {
             if (_apolloClient.value != null) {
                 try {
                     val serverResponse =
