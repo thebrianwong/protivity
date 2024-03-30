@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
@@ -28,7 +27,6 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.apollographql.apollo3.ApolloClient
 import com.thebrianwong.protivity.classes.BoolDataStoreKeys
 import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.NotificationUtils
@@ -60,18 +58,6 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val hasInternetConnection = connectivityManager.activeNetwork
 
-    val AITextViewModel: AITextViewModel = viewModel()
-    val graphQLEndpoint = stringResource(R.string.LAMBDA_FUNCTION_URL)
-    var apolloClient by remember {
-        mutableStateOf<ApolloClient?>(null)
-    }
-
-    if (apolloClient == null && hasInternetConnection != null) {
-        apolloClient = ApolloClient.Builder()
-            .serverUrl(graphQLEndpoint)
-            .build()
-    }
-
     timerViewModel.setDataStore(dataStore)
     timerViewModel.setCoroutine(coroutine)
     timerViewModel.setPermissionUtils(permissionUtils)
@@ -86,15 +72,14 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
             vibrateEnabled
         )
     }
+
+    val AITextViewModel: AITextViewModel = viewModel()
     val lambdaFunctionUrl = stringResource(R.string.LAMBDA_FUNCTION_URL)
     val apiKey = stringResource(R.string.API_KEY)
     val lambdaService = LambdaService(lambdaFunctionUrl, apiKey)
 
     AITextViewModel.setLambdaService(lambdaService)
     AITextViewModel.setCoroutine(coroutine)
-    if (apolloClient != null) {
-        AITextViewModel.setApolloClient(apolloClient!!)
-    }
     AITextViewModel.setIndicateNetworkErrorCallback {
         Toast.makeText(
             context,

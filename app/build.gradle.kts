@@ -3,7 +3,6 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.apollographql.apollo3") version "3.8.2"
 }
 val GRAPHQL_ENDPOINT by extra("http://10.0.2.2:4000/graphql")
 
@@ -74,8 +73,6 @@ dependencies {
     implementation("com.squareup.retrofit2:retrofit:2.9.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
-
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
     implementation("androidx.navigation:navigation-compose:2.7.6")
@@ -96,10 +93,4 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-}
-
-apollo {
-    service("service") {
-        packageName.set("com.example")
-    }
 }
