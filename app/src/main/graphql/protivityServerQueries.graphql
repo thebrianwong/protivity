@@ -1,5 +1,0 @@
-query Query($duration: Int!) {
-    aiText(duration: $duration) {
-        content
-    }
-}

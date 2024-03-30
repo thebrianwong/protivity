@@ -1,7 +1,0 @@
-type AiText {
-    content: String
-}
-
-type Query {
-    aiText(duration: Int!): AiText!
-}
