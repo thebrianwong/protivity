@@ -73,22 +73,22 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         )
     }
 
-    val AITextViewModel: AITextViewModel = viewModel()
+    val aiTextViewModel: AITextViewModel = viewModel()
     val lambdaFunctionUrl = stringResource(R.string.LAMBDA_FUNCTION_URL)
     val apiKey = stringResource(R.string.API_KEY)
     val lambdaService = LambdaService(lambdaFunctionUrl, apiKey)
 
-    AITextViewModel.setLambdaService(lambdaService)
-    AITextViewModel.setCoroutine(coroutine)
-    AITextViewModel.setIndicateNetworkErrorCallback {
+    aiTextViewModel.setLambdaService(lambdaService)
+    aiTextViewModel.setCoroutine(coroutine)
+    aiTextViewModel.setIndicateNetworkErrorCallback {
         Toast.makeText(
             context,
             "There is a network connection issue. Please try again later.",
             Toast.LENGTH_LONG
         ).show()
     }
-    timerViewModel.setGenTextCallback { AITextViewModel.changeDisplayText(it) }
-    timerViewModel.setResetTextCallback { AITextViewModel.resetText() }
+    timerViewModel.setGenTextCallback { aiTextViewModel.changeDisplayText(it) }
+    timerViewModel.setResetTextCallback { aiTextViewModel.resetText() }
 
     if (timerViewModel.timer.value == null) {
         val savedTimerValues = dataStore.data.map { preferences ->
@@ -176,8 +176,8 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     LaunchedEffect(context) {
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 
-        if (AITextViewModel.initializing.value) {
-            AITextViewModel.initializeText(10000)
+        if (aiTextViewModel.initializing.value) {
+            aiTextViewModel.initializeText(10000)
 
             if (hasInternetConnection == null) {
                 Toast.makeText(
@@ -195,7 +195,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         startDestination = Screen.HomeScreen.route
     ) {
         composable(Screen.HomeScreen.route) {
-            Home(timerViewModel, modalViewModel, AITextViewModel, dataStore,
+            Home(timerViewModel, modalViewModel, aiTextViewModel, dataStore,
                 { navController.navigate(Screen.SettingsScreen.route) })
         }
         composable(Screen.SettingsScreen.route) {
