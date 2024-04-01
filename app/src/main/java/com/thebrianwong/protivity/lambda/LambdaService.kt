@@ -29,14 +29,3 @@ class LambdaService(url: String, private val apiKey: String) {
         suspend fun generateContent(@Header("x-api-key") apiKey: String, @Body bodyDuration: BodyDuration): ResponseObj
     }
 }
-
-data class Content (
-    val content: String
-)
-
-data class ResponseObj(
-    val statusCode: Int,
-    val body: Content,
-)
-
-data class BodyDuration(private val duration: Long)
