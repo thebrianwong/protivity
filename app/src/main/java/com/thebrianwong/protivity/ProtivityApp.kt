@@ -16,7 +16,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.core.app.ActivityCompat
@@ -28,12 +27,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.apollographql.apollo3.ApolloClient
 import com.thebrianwong.protivity.classes.BoolDataStoreKeys
 import com.thebrianwong.protivity.classes.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.NotificationUtils
 import com.thebrianwong.protivity.classes.PermissionUtils
 import com.thebrianwong.protivity.classes.Screen
+import com.thebrianwong.protivity.lambda.LambdaService
 import com.thebrianwong.protivity.viewModels.AITextViewModel
 import com.thebrianwong.protivity.viewModels.ModalViewModel
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
@@ -59,18 +58,6 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val hasInternetConnection = connectivityManager.activeNetwork
 
-    val AITextViewModel: AITextViewModel = viewModel()
-    val graphQLEndpoint = stringResource(R.string.GRAPHQL_ENDPOINT)
-    var apolloClient by remember {
-        mutableStateOf<ApolloClient?>(null)
-    }
-
-    if (apolloClient == null && hasInternetConnection != null) {
-        apolloClient = ApolloClient.Builder()
-            .serverUrl(graphQLEndpoint)
-            .build()
-    }
-
     timerViewModel.setDataStore(dataStore)
     timerViewModel.setCoroutine(coroutine)
     timerViewModel.setPermissionUtils(permissionUtils)
@@ -86,19 +73,22 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         )
     }
 
-    AITextViewModel.setCoroutine(coroutine)
-    if (apolloClient != null) {
-        AITextViewModel.setApolloClient(apolloClient!!)
-    }
-    AITextViewModel.setIndicateNetworkErrorCallback {
+    val aiTextViewModel: AITextViewModel = viewModel()
+    val lambdaFunctionUrl = stringResource(R.string.LAMBDA_FUNCTION_URL)
+    val apiKey = stringResource(R.string.API_KEY)
+    val lambdaService = LambdaService(lambdaFunctionUrl, apiKey)
+
+    aiTextViewModel.setLambdaService(lambdaService)
+    aiTextViewModel.setCoroutine(coroutine)
+    aiTextViewModel.setIndicateNetworkErrorCallback {
         Toast.makeText(
             context,
             "There is a network connection issue. Please try again later.",
             Toast.LENGTH_LONG
         ).show()
     }
-    timerViewModel.setGenTextCallback { AITextViewModel.changeDisplayText(it) }
-    timerViewModel.setResetTextCallback { AITextViewModel.resetText() }
+    timerViewModel.setGenTextCallback { aiTextViewModel.changeDisplayText(it) }
+    timerViewModel.setResetTextCallback { aiTextViewModel.resetText() }
 
     if (timerViewModel.timer.value == null) {
         val savedTimerValues = dataStore.data.map { preferences ->
@@ -186,8 +176,8 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     LaunchedEffect(context) {
         requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
 
-        if (AITextViewModel.initializing.value) {
-            AITextViewModel.initializeText(10000)
+        if (aiTextViewModel.initializing.value) {
+            aiTextViewModel.initializeText(10000)
 
             if (hasInternetConnection == null) {
                 Toast.makeText(
@@ -205,7 +195,7 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         startDestination = Screen.HomeScreen.route
     ) {
         composable(Screen.HomeScreen.route) {
-            Home(timerViewModel, modalViewModel, AITextViewModel, dataStore,
+            Home(timerViewModel, modalViewModel, aiTextViewModel, dataStore,
                 { navController.navigate(Screen.SettingsScreen.route) })
         }
         composable(Screen.SettingsScreen.route) {

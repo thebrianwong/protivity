@@ -1,9 +1,9 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
-    id("com.apollographql.apollo3") version "3.8.2"
 }
-val GRAPHQL_ENDPOINT by extra("http://10.0.2.2:4000/graphql")
 
 android {
     namespace = "com.thebrianwong.protivity"
@@ -24,7 +24,12 @@ android {
 
     buildTypes {
         debug {
-            resValue("string", "GRAPHQL_ENDPOINT", "http://10.0.2.2:4000/graphql")
+            val p = Properties()
+            p.load(project.rootProject.file("local.properties").reader())
+            val lambdaValue: String = p.getProperty("LAMBDA_ENDPOINT")
+            val apiKey: String = p.getProperty("API_KEY")
+            resValue("string", "LAMBDA_FUNCTION_URL", lambdaValue)
+            resValue("string", "API_KEY", apiKey)
         }
         release {
             isMinifyEnabled = false
@@ -32,7 +37,12 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            resValue("string", "GRAPHQL_ENDPOINT", "http://protivity-1695151101.us-west-1.elb.amazonaws.com/graphql")
+            val p = Properties()
+            p.load(project.rootProject.file("local.properties").reader())
+            val lambdaValue: String = p.getProperty("LAMBDA_ENDPOINT")
+            val apiKey: String = p.getProperty("API_KEY")
+            resValue("string", "LAMBDA_FUNCTION_URL", lambdaValue)
+            resValue("string", "API_KEY", apiKey)
         }
     }
     compileOptions {
@@ -44,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.5.1"
@@ -57,7 +68,9 @@ android {
 
 dependencies {
 
-    implementation("com.apollographql.apollo3:apollo-runtime:3.8.2")
+    // to make HTTP calls
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation("androidx.datastore:datastore-preferences:1.0.0")
 
@@ -79,10 +92,4 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-}
-
-apollo {
-    service("service") {
-        packageName.set("com.example")
-    }
 }
