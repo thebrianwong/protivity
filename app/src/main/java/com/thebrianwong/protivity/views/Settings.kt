@@ -55,6 +55,12 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                     "enabledIcon" to R.drawable.clear_text_enabled,
                     "disabledIcon" to R.drawable.clear_text_disabled
                 ),
+                hashMapOf(
+                    "setting" to "Strict Mode",
+                    "description" to "Prevents switching to other apps.",
+                    "enabledIcon" to R.drawable.clear_text_enabled,
+                    "disabledIcon" to R.drawable.clear_text_disabled
+                )
             )
 
             settingsIcons.forEach { data ->

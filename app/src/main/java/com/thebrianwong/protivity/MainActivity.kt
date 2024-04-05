@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    ProtivityApp(dataStore, window)
+                    ProtivityApp(dataStore, window) { changeSwitchBackSetting(it) }
                 }
             }
         }

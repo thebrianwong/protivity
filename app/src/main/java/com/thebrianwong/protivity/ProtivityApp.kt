@@ -43,7 +43,11 @@ import kotlinx.coroutines.flow.map
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
-fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
+fun ProtivityApp(
+    dataStore: DataStore<Preferences>,
+    window: Window,
+    changeStrictMode: (Boolean) -> Unit
+) {
     val context = LocalContext.current
     val coroutine = rememberCoroutineScope()
     val navController: NavController = rememberNavController()
@@ -53,7 +57,6 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     val settingsViewModel: SettingsViewModel = viewModel()
     val permissionUtils by remember { mutableStateOf(PermissionUtils(context)) }
     val notificationUtils by remember { mutableStateOf(NotificationUtils(context)) }
-
     val connectivityManager =
         context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
     val hasInternetConnection = connectivityManager.activeNetwork
@@ -124,11 +127,13 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
         listOf(
             settings[BoolDataStoreKeys.SHOULD_PLAY_ALARM.key],
             settings[BoolDataStoreKeys.SHOULD_VIBRATE.key],
-            settings[BoolDataStoreKeys.SHOULD_CLEAR_TEXT.key]
+            settings[BoolDataStoreKeys.SHOULD_CLEAR_TEXT.key],
+            settings[BoolDataStoreKeys.IS_STRICT_MODE.key]
         )
     }
     val settingsData: List<Boolean?> by rawSettingsData.collectAsState(
         initial = listOf(
+            true,
             true,
             true,
             true
@@ -137,11 +142,15 @@ fun ProtivityApp(dataStore: DataStore<Preferences>, window: Window) {
     val alarmSetting = settingsData[0]
     val vibrateSetting = settingsData[1]
     val clearTextSetting = settingsData[2]
+    val strictModeSetting = settingsData[3]
     settingsViewModel.loadSettings(
         alarmSetting ?: true,
         vibrateSetting ?: true,
-        clearTextSetting ?: true
+        clearTextSetting ?: true,
+        strictModeSetting ?: true
     )
+    settingsViewModel.setStrictModeCallback(changeStrictMode)
+    changeStrictMode(strictModeSetting ?: true)
 
     notificationUtils.changeNotificationChannels(alarmSetting ?: true, vibrateSetting ?: true)
     timerViewModel.setShouldResetText(clearTextSetting ?: true)
