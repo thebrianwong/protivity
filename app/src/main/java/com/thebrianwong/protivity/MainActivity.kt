@@ -1,6 +1,7 @@
 package com.thebrianwong.protivity
 
 import android.content.Context
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -32,5 +33,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
     }
 }
