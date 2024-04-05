@@ -14,5 +14,6 @@ enum class BoolDataStoreKeys(val key: Preferences.Key<Boolean>) {
     NEW_COUNTER(booleanPreferencesKey("newCounter")),
     SHOULD_VIBRATE(booleanPreferencesKey("shouldVibrate")),
     SHOULD_PLAY_ALARM(booleanPreferencesKey("shouldPlayAlarm")),
-    SHOULD_CLEAR_TEXT(booleanPreferencesKey("shouldClearValue"))
+    SHOULD_CLEAR_TEXT(booleanPreferencesKey("shouldClearValue")),
+    IS_STRICT_MODE(booleanPreferencesKey("isStrictMode"))
 }
