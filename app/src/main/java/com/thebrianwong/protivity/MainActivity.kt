@@ -19,6 +19,8 @@ import com.thebrianwong.protivity.ui.theme.ProtivityTheme
 val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "timer")
 
 class MainActivity : ComponentActivity() {
+    var shouldSwitchBack = true
+
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,9 +37,15 @@ class MainActivity : ComponentActivity() {
         }
     }
 
+    fun changeSwitchBackSetting(newSetting: Boolean) {
+        shouldSwitchBack = newSetting
+    }
+
     override fun onPause() {
         super.onPause()
+        if (shouldSwitchBack) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+        }
     }
 }
