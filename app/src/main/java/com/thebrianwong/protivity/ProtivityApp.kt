@@ -27,8 +27,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.thebrianwong.protivity.classes.BoolDataStoreKeys
-import com.thebrianwong.protivity.classes.LongDataStoreKeys
+import com.thebrianwong.protivity.enums.BoolDataStoreKeys
+import com.thebrianwong.protivity.enums.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.NotificationUtils
 import com.thebrianwong.protivity.classes.PermissionUtils
 import com.thebrianwong.protivity.classes.Screen

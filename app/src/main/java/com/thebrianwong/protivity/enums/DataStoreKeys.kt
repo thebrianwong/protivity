@@ -1,4 +1,4 @@
-package com.thebrianwong.protivity.classes
+package com.thebrianwong.protivity.enums
 
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey

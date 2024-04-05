@@ -5,7 +5,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
-import com.thebrianwong.protivity.classes.BoolDataStoreKeys
+import com.thebrianwong.protivity.enums.BoolDataStoreKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 

@@ -8,8 +8,8 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
-import com.thebrianwong.protivity.classes.BoolDataStoreKeys
-import com.thebrianwong.protivity.classes.LongDataStoreKeys
+import com.thebrianwong.protivity.enums.BoolDataStoreKeys
+import com.thebrianwong.protivity.enums.LongDataStoreKeys
 import com.thebrianwong.protivity.classes.NotificationUtils
 import com.thebrianwong.protivity.classes.PermissionUtils
 import com.thebrianwong.protivity.classes.ProtivityCountDownTimer
