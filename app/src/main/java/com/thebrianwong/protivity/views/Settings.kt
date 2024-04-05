@@ -112,7 +112,8 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                         SettingsSwitch(
                             setting = setting,
                             enabled = settingIsEnabled,
-                            handleOnToggle = { viewModel.toggleSetting(setting) })
+                            handleOnToggle = { viewModel.toggleSetting(setting) }
+                        )
                     }
                 }
             }
