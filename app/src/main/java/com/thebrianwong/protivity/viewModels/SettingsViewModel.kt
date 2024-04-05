@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.lifecycle.ViewModel
 import com.thebrianwong.protivity.enums.BoolDataStoreKeys
+import com.thebrianwong.protivity.enums.SettingsOptions
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -54,19 +55,18 @@ class SettingsViewModel : ViewModel() {
         _strictModeEnabled.value = strictModeEnabled
     }
 
-    fun getSetting(setting: String): Boolean {
+    fun getSetting(setting: SettingsOptions): Boolean {
         return when (setting) {
-            "Alarm" -> _alarmEnabled.value
-            "Vibrate" -> _vibrateEnabled.value
-            "Clear Text" -> _clearTextEnabled.value
-            "Strict Mode" -> _strictModeEnabled.value
-            else -> true
+            SettingsOptions.ALARM -> _alarmEnabled.value
+            SettingsOptions.VIBRATE -> _vibrateEnabled.value
+            SettingsOptions.CLEAR_TEXT -> _clearTextEnabled.value
+            SettingsOptions.STRICT_MODE -> _strictModeEnabled.value
         }
     }
 
-    fun toggleSetting(setting: String) {
+    fun toggleSetting(setting: SettingsOptions) {
         when (setting) {
-            "Alarm" -> {
+            SettingsOptions.ALARM -> {
                 _alarmEnabled.value = !_alarmEnabled.value
                 _coroutine.value?.launch {
                     _dataStore.value?.edit { settings ->
@@ -75,7 +75,7 @@ class SettingsViewModel : ViewModel() {
                 }
             }
 
-            "Vibrate" -> {
+            SettingsOptions.VIBRATE -> {
                 _vibrateEnabled.value = !_vibrateEnabled.value
                 _coroutine.value?.launch {
                     _dataStore.value?.edit { settings ->
@@ -84,7 +84,7 @@ class SettingsViewModel : ViewModel() {
                 }
             }
 
-            "Clear Text" -> {
+            SettingsOptions.CLEAR_TEXT -> {
                 _clearTextEnabled.value = !_clearTextEnabled.value
                 _coroutine.value?.launch {
                     _dataStore.value?.edit { settings ->
@@ -93,7 +93,7 @@ class SettingsViewModel : ViewModel() {
                 }
             }
 
-            "Strict Mode" -> {
+            SettingsOptions.STRICT_MODE -> {
                 _strictModeEnabled.value = !_strictModeEnabled.value
                 _strictModeCallback.value?.let { it(_strictModeEnabled.value) }
                 _coroutine.value?.launch {

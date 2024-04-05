@@ -22,6 +22,7 @@ import com.thebrianwong.protivity.R
 import com.thebrianwong.protivity.composables.settings.SettingsIconText
 import com.thebrianwong.protivity.composables.settings.SettingsSwitch
 import com.thebrianwong.protivity.composables.settings.SettingsTopBar
+import com.thebrianwong.protivity.enums.SettingsOptions
 import com.thebrianwong.protivity.viewModels.SettingsViewModel
 
 @Composable
@@ -40,23 +41,23 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
         ) {
             val settingsIcons = listOf(
                 hashMapOf(
-                    "setting" to "Alarm",
+                    "setting" to SettingsOptions.ALARM,
                     "enabledIcon" to R.drawable.alarm_enabled,
                     "disabledIcon" to R.drawable.alarm_disabled
                 ),
                 hashMapOf(
-                    "setting" to "Vibrate",
+                    "setting" to SettingsOptions.VIBRATE,
                     "enabledIcon" to R.drawable.vibrate_enabled,
                     "disabledIcon" to R.drawable.vibrated_disabled
                 ),
                 hashMapOf(
-                    "setting" to "Clear Text",
+                    "setting" to SettingsOptions.CLEAR_TEXT,
                     "description" to "Erases AI text when the timer expires.",
                     "enabledIcon" to R.drawable.clear_text_enabled,
                     "disabledIcon" to R.drawable.clear_text_disabled
                 ),
                 hashMapOf(
-                    "setting" to "Strict Mode",
+                    "setting" to SettingsOptions.STRICT_MODE,
                     "description" to "Prevents switching to other apps.",
                     "enabledIcon" to R.drawable.strict_mode_enabled,
                     "disabledIcon" to R.drawable.strict_mode_disabled
@@ -64,7 +65,7 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
             )
 
             settingsIcons.forEach { data ->
-                val setting = data["setting"] as String
+                val setting = data["setting"] as SettingsOptions
                 val description = data["description"] as String?
                 val enabledIcon = data["enabledIcon"] as Int
                 val disabledIcon = data["disabledIcon"] as Int

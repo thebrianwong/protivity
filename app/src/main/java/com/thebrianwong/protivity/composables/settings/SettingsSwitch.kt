@@ -9,9 +9,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.thebrianwong.protivity.enums.SettingsOptions
 
 @Composable
-fun SettingsSwitch(setting: String, enabled: Boolean, handleOnToggle: (String) -> Unit) {
+fun SettingsSwitch(setting: SettingsOptions, enabled: Boolean, handleOnToggle: (SettingsOptions) -> Unit) {
     Divider(
         color = Color.DarkGray, modifier = Modifier
             .fillMaxHeight(0.6f)
