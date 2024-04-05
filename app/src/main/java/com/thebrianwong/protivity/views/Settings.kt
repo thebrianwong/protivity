@@ -58,8 +58,8 @@ fun Settings(viewModel: SettingsViewModel, navigateToHome: () -> Unit) {
                 hashMapOf(
                     "setting" to "Strict Mode",
                     "description" to "Prevents switching to other apps.",
-                    "enabledIcon" to R.drawable.clear_text_enabled,
-                    "disabledIcon" to R.drawable.clear_text_disabled
+                    "enabledIcon" to R.drawable.strict_mode_enabled,
+                    "disabledIcon" to R.drawable.strict_mode_disabled
                 )
             )
 
