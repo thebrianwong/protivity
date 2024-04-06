@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
@@ -20,6 +21,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ti
 
 class MainActivity : ComponentActivity() {
     var shouldSwitchBack = true
+    var showToast = false
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,6 +48,19 @@ class MainActivity : ComponentActivity() {
         if (shouldSwitchBack) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            showToast = true
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (showToast) {
+            Toast.makeText(
+                this,
+                "Focus! No Distractions!",
+                Toast.LENGTH_SHORT
+            ).show()
+            showToast = false
         }
     }
 }
