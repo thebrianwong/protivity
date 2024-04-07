@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -22,6 +24,7 @@ val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "ti
 class MainActivity : ComponentActivity() {
     var shouldSwitchBack = true
     var showToast = false
+    var outOfLoop = true
 
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,13 +48,12 @@ class MainActivity : ComponentActivity() {
 
     override fun onPause() {
         super.onPause()
-        if (shouldSwitchBack) {
+        if (shouldSwitchBack && outOfLoop) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
             showToast = true
         }
     }
-
     override fun onResume() {
         super.onResume()
         if (showToast) {
@@ -61,6 +63,11 @@ class MainActivity : ComponentActivity() {
                 Toast.LENGTH_SHORT
             ).show()
             showToast = false
+            outOfLoop = false
+
+            Handler(Looper.getMainLooper()).postDelayed({
+                outOfLoop = true
+            }, 0)
         }
     }
 }
