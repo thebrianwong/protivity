@@ -23,10 +23,6 @@ class SettingsViewModel : ViewModel() {
     private val _changeNotiSettingsCallback =
         mutableStateOf<((Boolean, Boolean) -> Unit)?>(null)
 
-    val alarmEnabled = _alarmEnabled.value
-    val vibrateEnabled = _vibrateEnabled.value
-    val clearTextEnabled = _clearTextEnabled.value
-
     fun setCoroutine(coroutineScope: CoroutineScope) {
         _coroutine.value = coroutineScope
     }
