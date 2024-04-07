@@ -8,9 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.thebrianwong.protivity.enums.SettingsOptions
 
 @Composable
-fun SettingsIconText(setting: String, enabledIcon: Int, disabledIcon: Int, enabled: Boolean) {
+fun SettingsIconText(setting: SettingsOptions, enabledIcon: Int, disabledIcon: Int, enabled: Boolean) {
     Crossfade(targetState = enabled, label = "$setting Icon Change Animation") { enabled ->
         if (enabled) {
             Icon(
@@ -25,7 +26,7 @@ fun SettingsIconText(setting: String, enabledIcon: Int, disabledIcon: Int, enabl
         }
     }
     Text(
-        text = setting,
+        text = setting.text,
         modifier = Modifier.padding(start = 8.dp)
     )
 }
