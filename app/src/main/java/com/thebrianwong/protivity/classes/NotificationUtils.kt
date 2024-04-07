@@ -47,11 +47,12 @@ class NotificationUtils(private val context: Context) {
         val alarmAudioAttributes =
             AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_ALARM).build()
 
-        val vibPattern = longArrayOf(
-            0, 500, 50, 100, 50, 500, 50, 100, 50, 500,
-            1000, 500, 50, 100, 50, 500, 50, 100, 50, 500,
-            1000, 500, 50, 100, 50, 500, 50, 100, 50, 500
-        )
+        val vibPattern = mutableListOf<Long>(0, 500, 50, 100, 50, 500, 50, 100, 50, 500)
+        val vibSubPattern = listOf<Long>(1000, 500, 50, 100, 50, 500, 50, 100, 50, 500)
+        for (i in 1..100) {
+            vibPattern.addAll(vibSubPattern)
+        }
+
         val notificationChannel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationChannel(
                 "protivityChannel$alarmEnabled$vibrateEnabled",
@@ -59,7 +60,7 @@ class NotificationUtils(private val context: Context) {
                 NotificationManager.IMPORTANCE_HIGH
             ).apply {
                 description = "The notification for when the Protivity timer is up."
-                vibrationPattern = vibPattern
+                vibrationPattern = vibPattern.toLongArray()
                 setSound(
                     if (alarmEnabled) alarmSound else null,
                     alarmAudioAttributes
